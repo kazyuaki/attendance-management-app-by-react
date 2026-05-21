@@ -1,5 +1,15 @@
+# Laravel
 api/vendor
 api/node_modules
-frontend/node_modules
 api/.env
+
+# React
+node/node_modules
+node/dist
+node/.env
+
+# Docker
 docker/mysql/data
+
+# OS
+.DS_Store
