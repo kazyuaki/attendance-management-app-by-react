@@ -1,0 +1,5 @@
+api/vendor
+api/node_modules
+frontend/node_modules
+api/.env
+docker/mysql/data
