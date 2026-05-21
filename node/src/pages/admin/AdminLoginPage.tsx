@@ -1,11 +1,11 @@
 export default function AdminLoginPage() {
   return (
-    <main className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 px-4 py-12">
-      <div className="w-full max-w-sm">
+    <main className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 px-4 py-12">
+      <div className="w-full max-w-md">
         {/* カード */}
-        <div className="rounded-2xl bg-white px-8 py-10 shadow-2xl">
+        <div className="rounded-2xl bg-white px-12 py-12 shadow-2xl">
           {/* ヘッダー */}
-          <div className="mb-8 flex flex-col items-center text-center">
+          <div className="mb-10 flex flex-col items-center text-center">
             {/* シールドアイコン */}
             <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600 shadow-lg shadow-indigo-500/40">
               <svg
@@ -23,50 +23,50 @@ export default function AdminLoginPage() {
             </div>
 
             {/* バッジ */}
-            <span className="inline-block rounded-full bg-indigo-50 px-3 py-0.5 text-xs font-bold tracking-widest text-indigo-600">
+            <span className="inline-block rounded-full bg-indigo-50 px-3 py-0.5 text-sm font-bold tracking-widest text-indigo-600">
               ADMIN PORTAL
             </span>
 
-            <h1 className="mt-3 text-2xl font-bold tracking-tight text-slate-900">
+            <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
               管理者ログイン
             </h1>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-base text-slate-500">
               アカウント情報を入力してください
             </p>
           </div>
 
           {/* フォーム */}
-          <form className="space-y-5">
+          <form className="space-y-6">
             {/* メールアドレス */}
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              <label className="mb-1.5 block text-base font-medium text-slate-700">
                 メールアドレス
               </label>
               <input
                 type="email"
                 placeholder="admin@example.com"
                 autoComplete="email"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-100"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-base text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-100"
               />
             </div>
 
             {/* パスワード */}
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              <label className="mb-1.5 block text-base font-medium text-slate-700">
                 パスワード
               </label>
               <input
                 type="password"
                 placeholder="••••••••"
                 autoComplete="current-password"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-100"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-base text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-100"
               />
             </div>
 
             {/* ログインボタン */}
             <button
               type="submit"
-              className="mt-2 w-full rounded-xl bg-indigo-600 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition-all hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-500/30 active:translate-y-0"
+              className="mt-2 w-full rounded-xl bg-indigo-600 py-3 text-base font-semibold text-white shadow-md shadow-indigo-500/20 transition-all hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-500/30 active:translate-y-0"
             >
               ログイン
             </button>
@@ -74,7 +74,7 @@ export default function AdminLoginPage() {
         </div>
 
         {/* フッター */}
-        <p className="mt-6 text-center text-xs text-slate-500">
+        <p className="mt-6 text-center text-sm text-slate-500">
           © 2025 KAZUTECH — 管理者専用ページ
         </p>
       </div>
