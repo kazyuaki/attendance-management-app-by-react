@@ -1,3 +1,4 @@
+// routes/AppRoutes.tsx
 import { Routes, Route } from "react-router-dom";
 import AdminLoginPage from "../pages/admin/AdminLoginPage";
 import AdminAttendanceListPage from "../pages/admin/AdminAttendanceListPage";

@@ -1,3 +1,4 @@
+// src/App.tsx
 import AdminHeader from "./components/layouts/AdminHeader";
 import AppRoutes from "./routes/AppRoutes";
 
