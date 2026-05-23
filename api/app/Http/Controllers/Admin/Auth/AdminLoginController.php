@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Admin\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\Auth\AdminLoginRequest;
 use Illuminate\Support\Facades\Auth;
 
 class AdminLoginController extends Controller
 {
-    public function login(Request $request)
+    public function login(AdminLoginRequest $request)
     {
         // 管理者のログイン情報を取得
         $credentials = $request->only('email', 'password');
