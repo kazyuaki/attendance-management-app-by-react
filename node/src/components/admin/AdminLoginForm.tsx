@@ -1,3 +1,5 @@
+// components/admin/AdminLoginForm.tsx
+
 import AdminInputField from "./AdminInputField";
 import AdminSubmitButton from "./AdminSubmitButton";
 import axios from "axios";
@@ -6,11 +8,7 @@ import { useState } from "react";
 import { adminLogin } from "../../api/admin/auth";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-
-type LoginErrors = {
-  email?: string[];
-  password?: string[];
-};
+import { validateAdminLoginForm } from "../../utils/validation/adminLogin";
 
 /* 管理者ログインフォーム */
 export default function AdminLoginForm() {
@@ -28,23 +26,7 @@ export default function AdminLoginForm() {
   });
 
   // フロントエンドでのバリデーション
-  const validateLoginForm = () => {
-    const newErrors: LoginErrors = {};
-
-    if (!email) {
-      newErrors.email = ["メールアドレスは必須です。"];
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = ["有効なメールアドレスを入力してください。"];
-    }
-
-    if (!password) {
-      newErrors.password = ["パスワードは必須です。"];
-    } else if (password.length < 8) {
-      newErrors.password = ["パスワードは8文字以上でなければなりません。"];
-    }
-
-    return newErrors;
-  };
+  const validateLoginForm = () => validateAdminLoginForm(email, password);
 
   // フォームの送信ボタンを無効化する条件
   const isDisabled =
@@ -65,6 +47,7 @@ export default function AdminLoginForm() {
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      setIsSubmitting(false);
       return;
     }
 
