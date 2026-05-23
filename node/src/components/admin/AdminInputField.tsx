@@ -6,6 +6,7 @@ type Props = {
   autoComplete?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: () => void;
 };
 
 /* 管理者ログインフォームの入力フィールド */
@@ -16,6 +17,7 @@ export default function AdminInputField({
   autoComplete,
   value,
   onChange,
+  onBlur,
 }: Props) {
   return (
     <div>
@@ -27,6 +29,7 @@ export default function AdminInputField({
         type={type}
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
         placeholder={placeholder}
         autoComplete={autoComplete}
         className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-base text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-100"
