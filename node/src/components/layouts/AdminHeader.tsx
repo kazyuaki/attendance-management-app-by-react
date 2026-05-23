@@ -1,9 +1,21 @@
 // components/layouts/AdminHeader.tsx
 import { LogOut } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { adminLogout } from "../../api/admin/auth";
 
 /* 管理者用のヘッダーコンポーネント */
 export default function AdminHeader() {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await adminLogout();
+      navigate("/admin/login");
+    } catch (error) {
+      console.error("ログアウト失敗:", error);
+    }
+  };
+
   return (
     <header className="sticky top-0 z-50 bg-slate-900 text-white shadow-lg shadow-slate-900/30">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
@@ -59,8 +71,12 @@ export default function AdminHeader() {
               </Link>
             </li>
             <li className="ml-3">
-              <button className="flex items-center gap-2 rounded-lg border border-slate-600 px-5 py-2 text-lg font-medium text-slate-300 transition-colors hover:border-slate-400 hover:text-white">
-                <LogOut className="h-5 w-5" />
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 rounded-lg border border-slate-600 px-5 py-2 text-lg font-medium text-slate-300 transition-colors hover:border-slate-400 hover:text-white"
+              >
+                <LogOut
+                  className="h-5 w-5" />
                 ログアウト
               </button>
             </li>
