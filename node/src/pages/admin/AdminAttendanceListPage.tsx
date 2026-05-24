@@ -32,6 +32,7 @@ export default function AdminAttendanceListPage() {
         setIsLoading(true);
         const data = await fetchAdminAttendances(currentDate);
         setAttendances(data);
+        console.log("勤怠情報を取得しました:", data);
       } catch (error) {
         console.error("勤怠情報の取得に失敗しました:", error);
       } finally {

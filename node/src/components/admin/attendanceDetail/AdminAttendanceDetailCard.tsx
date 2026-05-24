@@ -3,19 +3,18 @@
 import AdminAttendanceBreakRow from "./AdminAttendanceBreakRow";
 import AdminAttendanceTimeRow from "./AdminAttendanceTimeRow";
 
-type BreakTime = {
-  start: string;
-  end: string;
-};
-
 type Attendance = {
-  userName: string;
-  year: string;
-  date: string;
-  clockIn: string;
-  clockOut: string;
-  breaks: BreakTime[];
+  id: number;
+  user_name: string;
+  work_date: string;
+  clock_in: string | null;
+  clock_out: string | null;
   note: string;
+  break_times: {
+    id: number;
+    start_time: string;
+    end_time: string | null;
+  }[];
 };
 
 type Props = {
@@ -38,30 +37,30 @@ export default function AdminAttendanceDetailCard({ attendance }: Props) {
         <div className="flex items-center border-b border-gray-100 px-8 py-5">
           <p className="w-40 text-lg font-medium text-gray-400">名前</p>
           <p className="text-lg font-semibold text-gray-800">
-            {attendance.userName}
+            {attendance.user_name}
           </p>
         </div>
 
         {/* 日付 */}
         <div className="flex items-center border-b border-gray-100 px-8 py-5">
           <p className="w-40 text-lg font-medium text-gray-400">日付</p>
-          <p className="text-lg font-semibold text-gray-800">{`${attendance.year} ${attendance.date}`}</p>
+          <p className="text-lg font-semibold text-gray-800">{attendance.work_date}</p>
         </div>
 
         {/* 出勤・退勤 */}
         <AdminAttendanceTimeRow
           label="勤務時間"
-          start={attendance.clockIn}
-          end={attendance.clockOut}
+          start={attendance.clock_in ?? ""}
+          end={attendance.clock_out ?? ""}
         />
 
         {/* 休憩時間 */}
-        {attendance.breaks.map((breakTime, index) => (
+        {attendance.break_times.map((breakTime, index) => (
           <AdminAttendanceBreakRow
-            key={index}
+            key={breakTime.id}
             label={`休憩${index === 0 ? "" : index + 1}`}
-            start={breakTime.start}
-            end={breakTime.end}
+            start={breakTime.start_time}
+            end={breakTime.end_time ?? ""}
           />
         ))}
 

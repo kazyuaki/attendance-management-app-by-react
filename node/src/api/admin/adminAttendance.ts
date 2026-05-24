@@ -22,5 +22,15 @@ export const fetchAdminAttendances = async (
       withCredentials: true,
     },
   );
-	return response.data.data;
+  return response.data.data;
+}
+
+export const getAdminAttendanceDetail = async (id: string) => {
+  const response = await axios.get(
+    `http://localhost:8000/api/admin/get-attendance-detail/${id}`,
+    {
+      withCredentials: true,
+    },
+  );
+  return response.data;
 }
