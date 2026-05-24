@@ -34,8 +34,7 @@ Route::prefix('admin')->group(function () {
 
         // 勤怠一覧取得
         Route::get(
-            '/attendances',
-            GetAttendanceListController::class
+            '/get-attendance-list',            GetAttendanceListController::class
         );
     });
 });

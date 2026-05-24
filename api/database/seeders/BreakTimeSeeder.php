@@ -20,15 +20,15 @@ class BreakTimeSeeder extends Seeder
         $suzuki = User::where('email', 'suzuki@attendance.com')->first();
 
         $yamadaAttendance = Attendance::where('user_id', $yamada->id)
-            ->where('work_date', '2024-06-01')
+            ->where('work_date', '2026-06-01')
             ->first();
 
         $satoAttendance = Attendance::where('user_id', $sato->id)
-            ->where('work_date', '2024-06-01')
+            ->where('work_date', '2026-06-01')
             ->first();
 
         $suzukiAttendance = Attendance::where('user_id', $suzuki->id)
-            ->where('work_date', '2024-06-01')
+            ->where('work_date', '2026-06-01')
             ->first();
 
         BreakTime::create([

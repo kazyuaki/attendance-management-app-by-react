@@ -1,18 +1,14 @@
+import type { AdminAttendance } from "../../../types/adminAttendance";
 import AdminAttendanceRow from "./AdminAttendanceRow";
 
-type Staff = {
-  name: string;
-  initial: string;
-};
-
 type Props = {
-  staff: Staff[];
+  attendances: AdminAttendance[];
 };
 
 const COLUMNS = ["スタッフ名", "出勤", "退勤", "休憩", "合計"];
 
 /* 勤怠テーブル */
-export default function AdminAttendanceTable({ staff }: Props) {
+export default function AdminAttendanceTable({ attendances }: Props) {
   return (
     <div className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-100">
       <table className="w-full text-left text-base">
@@ -30,8 +26,11 @@ export default function AdminAttendanceTable({ staff }: Props) {
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-50">
-          {staff.map((person) => (
-            <AdminAttendanceRow key={person.name} {...person} />
+          {attendances.map((attendance) => (
+            <AdminAttendanceRow
+              key={attendance.id}
+              attendance={attendance}
+          />
           ))}
         </tbody>
       </table>
