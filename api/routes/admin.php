@@ -1,0 +1,42 @@
+<?php
+
+use App\Http\Controllers\Admin\Auth\AdminLoginController;
+use App\Http\Controllers\Api\Admin\GetAttendanceListController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
+Route::prefix('admin')->group(function () {
+    // 管理者ログイン
+    Route::middleware('web')->post(
+        '/login',
+        [AdminLoginController::class, 'login']
+    );
+
+    // 認証済み管理者ルート
+    Route::middleware(['web', 'auth:admin'])->group(function () {
+        // 管理者ユーザー情報取得
+        Route::get('/user', function (Request $request) {
+            return response()->json([
+                'admin_user' => $request->user('admin'),
+            ]);
+        });
+
+        // 管理者ログアウト
+        Route::post('/logout', function (Request $request) {
+            Auth::guard('admin')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return response()->json([
+                'message' => 'ログアウトしました。',
+            ]);
+        });
+
+        // 勤怠一覧取得
+        Route::get(
+            '/attendances',
+            GetAttendanceListController::class
+        );
+    });
+});
+
