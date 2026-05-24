@@ -48,7 +48,7 @@ export default function AdminHeader() {
           <ul className="flex items-center gap-1">
             <li>
               <Link
-                to="/admin/attendance"
+                to="/admin/attendances"
                 className="rounded-lg px-4 py-2 text-lg font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
               >
                 勤怠一覧
