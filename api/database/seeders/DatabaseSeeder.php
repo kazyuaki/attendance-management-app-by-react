@@ -23,6 +23,9 @@ class DatabaseSeeder extends Seeder
         // ]);
         $this->call([
             AdminUserSeeder::class,
+            UserSeeder::class,
+            AttendanceSeeder::class,
+            BreakTimeSeeder::class,
         ]);
     }
 }
