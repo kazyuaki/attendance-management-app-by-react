@@ -17,6 +17,7 @@ class GetAdminAttendanceDetailController extends Controller
         return response()->json([
             'id' => $attendance->id,
             'user_name' => $attendance->user->name,
+            'work_date_value' => Carbon::parse($attendance->work_date)->format('Y-m-d'),
             'work_date' => Carbon::parse($attendance->work_date)->format('Y年n月j日'),
             'clock_in' => Carbon::parse($attendance->clock_in)->format('H:i'),
             'clock_out' => $attendance->clock_out ? Carbon::parse($attendance->clock_out)->format('H:i') : null,
@@ -24,8 +25,8 @@ class GetAdminAttendanceDetailController extends Controller
             'break_times' => $attendance->breakTimes->map(function ($breakTime) {
                 return [
                     'id' => $breakTime->id,
-                    'start_time' => Carbon::parse($breakTime->break_start)->format('H:i'),
-                    'end_time' => $breakTime->break_end ? Carbon::parse($breakTime->break_end)->format('H:i') : null,
+                    'break_in' => Carbon::parse($breakTime->break_in)->format('H:i'),
+                    'break_out' => $breakTime->break_out ? Carbon::parse($breakTime->break_out)->format('H:i') : null,
                 ];
             }),
         ]);

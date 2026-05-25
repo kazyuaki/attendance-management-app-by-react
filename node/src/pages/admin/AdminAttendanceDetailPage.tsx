@@ -7,14 +7,15 @@ import { getAdminAttendanceDetail } from "../../api/admin/adminAttendance";
 type AttendanceDetail = {
   id: number;
   user_name: string;
+  work_date_value: string;
   work_date: string;
   clock_in: string | null;
   clock_out: string | null;
   note: string;
   break_times: {
     id: number;
-    start_time: string;
-    end_time: string | null;
+    break_in: string;
+    break_out: string | null;
   }[];
 };
 

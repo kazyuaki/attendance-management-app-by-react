@@ -3,10 +3,11 @@ import type { AdminAttendance } from "../../../types/adminAttendance";
 
 type Props = {
   attendance: AdminAttendance;
+  date: string;
 };
 
 /* 勤怠テーブルの1行 */
-export default function AdminAttendanceRow({ attendance }: Props) {
+export default function AdminAttendanceRow({ attendance, date }: Props) {
   const initial = attendance.user_name.charAt(0); // 名前の頭文字を取得
   return (
     <tr className="group transition hover:bg-slate-50/70">
@@ -32,7 +33,7 @@ export default function AdminAttendanceRow({ attendance }: Props) {
       </td>
       <td className="px-6 py-4">
         <Link
-          to={`/admin/attendances/${attendance.id}`}
+          to={`/admin/attendances/${attendance.id}?date=${date}`}
           className="rounded-lg bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-100"
         >
           詳細 →

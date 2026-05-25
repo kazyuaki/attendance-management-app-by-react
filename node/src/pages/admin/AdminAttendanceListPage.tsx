@@ -72,7 +72,7 @@ export default function AdminAttendanceListPage() {
           <p className="text-lg font-semibold text-slate-500">読み込み中...</p>
         </div>
       ) : (
-        <AdminAttendanceTable attendances={attendances} />
+        <AdminAttendanceTable attendances={attendances} date={currentDate} />
       )}
     </main>
   );

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\Auth\AdminLoginController;
 use App\Http\Controllers\Api\Admin\Attendance\GetAdminAttendanceDetailController;
 use App\Http\Controllers\Api\Admin\Attendance\GetAttendanceListController;
+use App\Http\Controllers\Api\Admin\Attendance\UpdateAdminAttendanceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -34,14 +35,13 @@ Route::prefix('admin')->group(function () {
         });
 
         // 勤怠一覧取得
-        Route::get(
-            '/get-attendance-list',            GetAttendanceListController::class
-        );
+        Route::get('/get-attendance-list', GetAttendanceListController::class);
 
         // 勤怠詳細取得
-        Route::get(
-            '/get-attendance-detail/{attendance}',            GetAdminAttendanceDetailController::class 
-        );
+        Route::get('/get-attendance-detail/{attendance}', GetAdminAttendanceDetailController::class);
+
+        // 勤怠更新
+        Route::put('/attendances/{attendance}', UpdateAdminAttendanceController::class);
     });
 });
 
