@@ -8,8 +8,8 @@ class BreakTime extends Model
 {
     protected $fillable = [
         'attendance_id',
-        'break_start',
-        'break_end',
+        'break_in',
+        'break_out',
     ];
 
     // 出勤記録とのリレーション

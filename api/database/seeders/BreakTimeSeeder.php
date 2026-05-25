@@ -33,22 +33,22 @@ class BreakTimeSeeder extends Seeder
 
         BreakTime::create([
             'attendance_id' => $yamadaAttendance->id,
-            'break_start' => '12:00:00',
-            'break_end' => '13:00:00',
+            'break_in' => '12:00:00',
+            'break_out' => '13:00:00',
 
         ]);
 
         BreakTime::create([
             'attendance_id' => $satoAttendance->id,
-            'break_start' => '13:00:00',
-            'break_end' => '14:00:00',
+            'break_in' => '13:00:00',
+            'break_out' => '14:00:00',
 
         ]);
 
         BreakTime::create([
             'attendance_id' => $suzukiAttendance->id,
-            'break_start' => '12:30:00',
-            'break_end' => '13:30:00',
+            'break_in' => '12:30:00',
+            'break_out' => '13:30:00',
         ]);
     }
 }
