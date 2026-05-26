@@ -165,22 +165,23 @@ export default function AdminAttendanceDetailCard({ attendance }: Props) {
                 handleBreakTimeChange(index, "breakOut", value)
               }
             />
-            {!breakTime.breakIn && (
-              <div className="flex px-8 pt-1">
-                <div className="w-40" />
-
-                <p className="px-8 pt-1 text-sm text-red-500">
-                  休憩開始時間は必須です
-                </p>
-              </div>
-            )}
-            {errors[`break_times.${index}.break_in`] && (
+            {errors[`break_times.${index}.break_in`] ? (
               <div className="flex px-8 pt-1">
                 <div className="w-40" />
                 <p className="px-8 pt-1 text-sm text-red-500">
                   {errors[`break_times.${index}.break_in`][0]}
                 </p>
               </div>
+            ) : (
+              !breakTime.breakIn && (
+                <div className="flex px-8 pt-1">
+                  <div className="w-40" />
+
+                  <p className="px-8 pt-1 text-sm text-red-500">
+                    休憩開始時間は必須です
+                  </p>
+                </div>
+              )
             )}
             {errors[`break_times.${index}.break_out`] && (
               <div className="flex px-8 pt-1">
