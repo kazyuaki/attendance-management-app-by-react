@@ -53,9 +53,7 @@ export default function AdminAttendanceDetailCard({ attendance }: Props) {
       });
       toast.success("勤怠情報を更新しました。");
 
-      setTimeout(() => {
-        navigate(`/admin/attendances?date=${attendance.work_date_value}`);
-       }, 1000); // 成功メッセージを表示するために少し遅延させる
+      navigate(`/admin/attendances?date=${attendance.work_date_value}`);
     } catch (error) {
       console.error("勤怠情報の更新に失敗しました:", error);
       toast.error("勤怠情報の更新に失敗しました。");
