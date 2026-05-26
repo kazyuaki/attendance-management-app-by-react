@@ -7,6 +7,7 @@ import { useState } from "react";
 import { updateAdminAttendance } from "../../../api/admin/adminAttendance";
 import { useNavigate } from "react-router-dom";
 import type { AdminAttendanceDetail } from "../../../types/adminAttendance";
+import axios from "axios";
 
 type Props = {
   attendance: AdminAttendanceDetail;
@@ -18,6 +19,7 @@ export default function AdminAttendanceDetailCard({ attendance }: Props) {
   const [clockIn, setClockIn] = useState(attendance.clock_in ?? "");
   const [clockOut, setClockOut] = useState(attendance.clock_out ?? "");
   const [note, setNote] = useState(attendance.note ?? "");
+  const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [breakTimes, setBreakTimes] = useState(
     attendance.break_times.map((breakTime) => ({
       id: breakTime.id,
@@ -39,8 +41,35 @@ export default function AdminAttendanceDetailCard({ attendance }: Props) {
     );
   };
 
+  /* 出勤時間のフォーカスアウト時にバリデーション */
+  const handleStartBlur = () => {
+    const newErrors = { ...errors };
+    if (!clockIn) {
+      newErrors.clock_in = ["出勤時間は必須です"];
+    } else {
+      delete newErrors.clock_in;
+    }
+    setErrors(newErrors);
+  };
+
+  /* 退勤時間のフォーカスアウト時にバリデーション */
+  const handleEndBlur = () => {
+    const newErrors = { ...errors };
+    if (!clockOut) {
+      newErrors.clock_out = ["退勤時間は必須です"];
+    } else {
+      delete newErrors.clock_out;
+    }
+    setErrors(newErrors);
+  };
+
+  /* 入力必須エラーの有無を判定 */
+  const hasRequiredInputError =
+    !clockIn || !clockOut || breakTimes.some((breakTime) => !breakTime.breakIn);
+
   /* 勤怠情報を保存する関数 */
   const handleSave = async () => {
+    setErrors({});
     try {
       await updateAdminAttendance(String(attendance.id), {
         clock_in: clockIn,
@@ -55,6 +84,11 @@ export default function AdminAttendanceDetailCard({ attendance }: Props) {
 
       navigate(`/admin/attendances?date=${attendance.work_date_value}`);
     } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 422) {
+        setErrors(error.response.data.errors);
+        toast.error("入力にエラーがあります。");
+        return;
+      }
       console.error("勤怠情報の更新に失敗しました:", error);
       toast.error("勤怠情報の更新に失敗しました。");
     }
@@ -93,33 +127,82 @@ export default function AdminAttendanceDetailCard({ attendance }: Props) {
           end={clockOut}
           onStartChange={setClockIn}
           onEndChange={setClockOut}
+          onStartBlur={handleStartBlur}
+          onEndBlur={handleEndBlur}
         />
+        {errors.clock_in && (
+          <div className="flex px-8 pt-1">
+            <div className="w-40" />
+            <p className="px-8 pt-1 text-sm text-red-500">
+              {errors.clock_in[0]}
+            </p>
+          </div>
+        )}
+        {errors.clock_out && (
+          <div className="flex px-8 pt-1">
+            <div className="w-40" />
+            <p className="px-8 pt-1 text-sm text-red-500">
+              {errors.clock_out[0]}
+            </p>
+          </div>
+        )}
 
         {/* 休憩時間 */}
         {breakTimes.map((breakTime, index) => (
-          <AdminAttendanceBreakRow
-            key={breakTime.id}
-            label={`休憩${index === 0 ? "" : index + 1}`}
-            breakIn={breakTime.breakIn}
-            breakOut={breakTime.breakOut}
-            onBreakInChange={(value) =>
-              handleBreakTimeChange(index, "breakIn", value)
-            }
-            onBreakOutChange={(value) =>
-              handleBreakTimeChange(index, "breakOut", value)
-            }
-          />
+          <div key={breakTime.id}>
+            <AdminAttendanceBreakRow
+              label={`休憩${index === 0 ? "" : index + 1}`}
+              breakIn={breakTime.breakIn}
+              breakOut={breakTime.breakOut}
+              onBreakInChange={(value) =>
+                handleBreakTimeChange(index, "breakIn", value)
+              }
+              onBreakOutChange={(value) =>
+                handleBreakTimeChange(index, "breakOut", value)
+              }
+            />
+            {!breakTime.breakIn && (
+              <div className="flex px-8 pt-1">
+                <div className="w-40" />
+
+                <p className="px-8 pt-1 text-sm text-red-500">
+                  休憩開始時間は必須です
+                </p>
+              </div>
+            )}
+            {errors[`break_times.${index}.break_in`] && (
+              <div className="flex px-8 pt-1">
+                <div className="w-40" />
+                <p className="px-8 pt-1 text-sm text-red-500">
+                  {errors[`break_times.${index}.break_in`][0]}
+                </p>
+              </div>
+            )}
+            {errors[`break_times.${index}.break_out`] && (
+              <div className="flex px-8 pt-1">
+                <div className="w-40" />
+                <p className="px-8 pt-1 text-sm text-red-500">
+                  {errors[`break_times.${index}.break_out`][0]}
+                </p>
+              </div>
+            )}
+          </div>
         ))}
 
         {/* 備考 */}
         <div className="flex items-start px-8 py-5">
           <p className="w-40 pt-1 text-lg font-medium text-gray-400">備考</p>
-          <textarea
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            className="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-lg text-gray-800 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
-            rows={4}
-          />
+          <div className="w-full">
+            <textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              className="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-lg text-gray-800 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
+              rows={4}
+            />
+            {errors.note && (
+              <p className="px-8 pt-1 text-sm text-red-500">{errors.note[0]}</p>
+            )}
+          </div>
         </div>
       </div>
 
@@ -127,7 +210,8 @@ export default function AdminAttendanceDetailCard({ attendance }: Props) {
       <div className="flex justify-end">
         <button
           onClick={handleSave}
-          className="rounded-lg bg-blue-600 px-5 py-2.5 text-lg font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95"
+          disabled={hasRequiredInputError}
+          className="rounded-lg bg-blue-600 px-5 py-2.5 text-lg font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400"
         >
           修正
         </button>
