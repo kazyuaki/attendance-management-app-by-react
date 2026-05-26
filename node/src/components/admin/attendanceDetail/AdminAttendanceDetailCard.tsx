@@ -43,24 +43,28 @@ export default function AdminAttendanceDetailCard({ attendance }: Props) {
 
   /* 出勤時間のフォーカスアウト時にバリデーション */
   const handleStartBlur = () => {
-    const newErrors = { ...errors };
-    if (!clockIn) {
-      newErrors.clock_in = ["出勤時間は必須です"];
-    } else {
-      delete newErrors.clock_in;
-    }
-    setErrors(newErrors);
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      if (!clockIn) {
+        newErrors.clock_in = ["出勤時間は必須です"];
+      } else {
+        delete newErrors.clock_in;
+      }
+      return newErrors;
+    });
   };
 
   /* 退勤時間のフォーカスアウト時にバリデーション */
   const handleEndBlur = () => {
-    const newErrors = { ...errors };
-    if (!clockOut) {
-      newErrors.clock_out = ["退勤時間は必須です"];
-    } else {
-      delete newErrors.clock_out;
-    }
-    setErrors(newErrors);
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      if (!clockOut) {
+        newErrors.clock_out = ["退勤時間は必須です"];
+      } else {
+        delete newErrors.clock_out;
+      }
+      return newErrors;
+    });
   };
 
   /* 入力必須エラーの有無を判定 */
