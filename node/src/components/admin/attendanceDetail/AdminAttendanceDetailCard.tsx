@@ -1,28 +1,15 @@
 // src/components/admin/attendanceDetail/AdminAttendancDetailCard.tsx
 
-import { useState } from "react";
 import AdminAttendanceBreakRow from "./AdminAttendanceBreakRow";
 import AdminAttendanceTimeRow from "./AdminAttendanceTimeRow";
+import toast from "react-hot-toast";
+import { useState } from "react";
 import { updateAdminAttendance } from "../../../api/admin/adminAttendance";
 import { useNavigate } from "react-router-dom";
-
-type Attendance = {
-  id: number;
-  user_name: string;
-  work_date_value: string;
-  work_date: string;
-  clock_in: string | null;
-  clock_out: string | null;
-  note: string;
-  break_times: {
-    id: number;
-    break_in: string;
-    break_out: string | null;
-  }[];
-};
+import type { AdminAttendanceDetail } from "../../../types/adminAttendance";
 
 type Props = {
-  attendance: Attendance;
+  attendance: AdminAttendanceDetail;
 };
 
 /* 勤怠詳細の基本情報を表示するコンポーネント */
@@ -33,6 +20,7 @@ export default function AdminAttendanceDetailCard({ attendance }: Props) {
   const [note, setNote] = useState(attendance.note ?? "");
   const [breakTimes, setBreakTimes] = useState(
     attendance.break_times.map((breakTime) => ({
+      id: breakTime.id,
       breakIn: breakTime.break_in,
       breakOut: breakTime.break_out ?? "",
     })),
@@ -53,17 +41,25 @@ export default function AdminAttendanceDetailCard({ attendance }: Props) {
 
   /* 勤怠情報を保存する関数 */
   const handleSave = async () => {
-    await updateAdminAttendance(String(attendance.id), {
-      clock_in: clockIn,
-      clock_out: clockOut,
-      break_times: breakTimes.map((breakTime) => ({
-        break_in: breakTime.breakIn,
-        break_out: breakTime.breakOut || null,
-      })),
+    try {
+      await updateAdminAttendance(String(attendance.id), {
+        clock_in: clockIn,
+        clock_out: clockOut,
+        break_times: breakTimes.map((breakTime) => ({
+          break_in: breakTime.breakIn,
+          break_out: breakTime.breakOut || null,
+        })),
+        note,
+      });
+      toast.success("勤怠情報を更新しました。");
 
-      note,
-    });
-    navigate(`/admin/attendances?date=${attendance.work_date_value}`); // 保存後に同じ日付の勤怠一覧ページに遷移
+      setTimeout(() => {
+        navigate(`/admin/attendances?date=${attendance.work_date_value}`);
+       }, 1000); // 成功メッセージを表示するために少し遅延させる
+    } catch (error) {
+      console.error("勤怠情報の更新に失敗しました:", error);
+      toast.error("勤怠情報の更新に失敗しました。");
+    }
   };
 
   return (
@@ -104,7 +100,7 @@ export default function AdminAttendanceDetailCard({ attendance }: Props) {
         {/* 休憩時間 */}
         {breakTimes.map((breakTime, index) => (
           <AdminAttendanceBreakRow
-            key={index}
+            key={breakTime.id}
             label={`休憩${index === 0 ? "" : index + 1}`}
             breakIn={breakTime.breakIn}
             breakOut={breakTime.breakOut}

@@ -1,7 +1,7 @@
 // src/api/admin/adminAttendance.ts
 
 import axios from "axios";
-import type { AdminAttendance } from "../../types/adminAttendance";
+import type { AdminAttendance, AdminAttendanceDetail } from "../../types/adminAttendance";
 
 type AttendanceResponse = {
   data: AdminAttendance[];
@@ -30,7 +30,7 @@ export const fetchAdminAttendances = async (
  * @param id - 取得したい勤怠のID
  * @returns 勤怠の詳細情報
  */
-export const getAdminAttendanceDetail = async (id: string) => {
+export const getAdminAttendanceDetail = async (id: string): Promise<AdminAttendanceDetail> => {
   const response = await axios.get(
     `http://localhost:8000/api/admin/get-attendance-detail/${id}`,
     {
