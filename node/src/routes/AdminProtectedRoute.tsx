@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { getAdminUser } from "../api/admin/auth";
+import AdminLayout from "../components/layouts/AdminLayout";
 
 export default function AdminProtectedRoute() {
   const [isAuthenticated, setIsAuthenticated ] = useState<boolean | null>(
@@ -30,5 +31,9 @@ export default function AdminProtectedRoute() {
   }
 
   // 認証されている場合は子コンポーネントを表示
-  return <Outlet />;
+  return (
+    <AdminLayout>
+      <Outlet />
+    </AdminLayout>
+  );
 }
