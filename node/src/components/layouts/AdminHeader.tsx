@@ -1,11 +1,14 @@
 // components/layouts/AdminHeader.tsx
 import { LogOut } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { adminLogout } from "../../api/admin/auth";
 
 /* 管理者用のヘッダーコンポーネント */
 export default function AdminHeader() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isLoginPage = location.pathname === "/admin/login";
 
   const handleLogout = async () => {
     try {
@@ -14,6 +17,19 @@ export default function AdminHeader() {
     } catch (error) {
       console.error("ログアウト失敗:", error);
     }
+  };
+
+  const navLinkClass = (path: string) => {
+    const isActive = location.pathname.startsWith(path);
+
+    return `
+      rounded-lg px-4 py-2 text-lg font-medium transition-colors
+      ${
+        isActive
+          ? "bg-white/10 text-white"
+          : "text-slate-300 hover:bg-white/10 hover:text-white"
+      }
+    `;
   };
 
   return (
@@ -44,44 +60,46 @@ export default function AdminHeader() {
         </div>
 
         {/* ナビゲーション */}
-        <nav>
-          <ul className="flex items-center gap-1">
-            <li>
-              <Link
-                to="/admin/attendances"
-                className="rounded-lg px-4 py-2 text-lg font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
-              >
-                勤怠一覧
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/admin/users"
-                className="rounded-lg px-4 py-2 text-lg font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
-              >
-                スタッフ一覧
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/admin/requests"
-                className="rounded-lg px-4 py-2 text-lg font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
-              >
-                申請一覧
-              </Link>
-            </li>
-            <li className="ml-3">
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-2 rounded-lg border border-slate-600 px-5 py-2 text-lg font-medium text-slate-300 transition-colors hover:border-slate-400 hover:text-white"
-              >
-                <LogOut
-                  className="h-5 w-5" />
-                ログアウト
-              </button>
-            </li>
-          </ul>
-        </nav>
+        {/* ログイン画面以外で表示 */}
+        {!isLoginPage && (
+          <nav>
+            <ul className="flex items-center gap-1">
+              <li>
+                <Link
+                  to="/admin/attendances"
+                  className={navLinkClass("/admin/attendances")}
+                >
+                  勤怠一覧
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/admin/users"
+                  className={navLinkClass("/admin/users")}
+                >
+                  スタッフ一覧
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/admin/requests"
+                  className={navLinkClass("/admin/requests")}
+                >
+                  申請一覧
+                </Link>
+              </li>
+              <li className="ml-3">
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 rounded-lg border border-slate-600 px-5 py-2 text-lg font-medium text-slate-300 transition-colors hover:border-slate-400 hover:text-white"
+                >
+                  <LogOut className="h-5 w-5" />
+                  ログアウト
+                </button>
+              </li>
+            </ul>
+          </nav>
+        )}
       </div>
     </header>
   );
