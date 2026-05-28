@@ -16,7 +16,7 @@ type Props = {
  * @param icon - アイコンコンポーネント（LucideIcon）
  * @param iconClassName - アイコンの追加クラス名（オプション）
  */
-export function SummaryCard({
+export function AdminRequestsSummaryCard({
   label,
   count,
   icon: Icon,

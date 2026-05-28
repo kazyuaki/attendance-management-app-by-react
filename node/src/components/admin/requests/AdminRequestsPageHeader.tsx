@@ -1,6 +1,6 @@
 import { CheckCircle2, Clock3 } from "lucide-react";
 import { ADMIN_REQUEST_STATUS_LABEL } from "../../../constants/adminRequest";
-import { SummaryCard } from "./AdminRequestsSummaryCard";
+import { AdminRequestsSummaryCard } from "./AdminRequestsSummaryCard";
 
 type Props = {
   pendingCount: number;
@@ -21,13 +21,13 @@ export function AdminRequestsPageHeader({
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:w-[360px]">
-        <SummaryCard
+        <AdminRequestsSummaryCard
           label={ADMIN_REQUEST_STATUS_LABEL.pending}
           count={pendingCount}
           icon={Clock3}
           iconClassName="text-amber-700"
         />
-        <SummaryCard
+        <AdminRequestsSummaryCard
           label={ADMIN_REQUEST_STATUS_LABEL.approved}
           count={approvedCount}
           icon={CheckCircle2}
