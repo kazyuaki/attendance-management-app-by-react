@@ -18,6 +18,7 @@ export default function AppRoutes() {
         <Route path="/admin/attendances/:id" element={<AdminAttendanceDetailPage />} />
         <Route path="/admin/users" element={<AdminUsersPage />} />
         <Route path="/admin/requests" element={<AdminRequestListPage />} />
+        <Route path="/admin/*" element={<Navigate to="/admin/attendances" replace />} />
       </Route>
       <Route path="*" element={<Navigate to="/admin/login" replace />} />
     </Routes>
