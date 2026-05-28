@@ -54,7 +54,7 @@ export function AdminRequestsFilter({
           type="search"
           value={searchTerm}
           onChange={(event) => onSearchChange(event.target.value)}
-          placeholder="名前・理由で検索"
+          placeholder="名前・区分・理由・対象日で検索"
           className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm font-medium text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-indigo-300 focus:bg-white focus:ring-4 focus:ring-indigo-100"
         />
       </label>
