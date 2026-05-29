@@ -4,7 +4,7 @@ type Props = {
   staffCount: number;
 };
 
-export function AdminStaffPageHeader({ staffCount }: Props) {
+export default function AdminStaffPageHeader({ staffCount }: Props) {
   return (
     <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
       <div>
