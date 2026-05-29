@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\Auth\AdminLoginController;
 use App\Http\Controllers\Api\Admin\Attendance\GetAdminAttendanceDetailController;
 use App\Http\Controllers\Api\Admin\Attendance\GetAttendanceListController;
 use App\Http\Controllers\Api\Admin\Attendance\UpdateAdminAttendanceController;
+use App\Http\Controllers\Api\Admin\User\GetAdminUserListController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -42,6 +43,9 @@ Route::prefix('admin')->group(function () {
 
         // 勤怠更新
         Route::put('/attendances/{attendance}', UpdateAdminAttendanceController::class);
+
+        // ユーザー一覧取得
+        Route::get('/get-user-list', GetAdminUserListController::class);
     });
 });
 
