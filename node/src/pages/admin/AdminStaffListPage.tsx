@@ -1,4 +1,4 @@
-import { AdminStaffPageHeader } from "../../components/admin/staff/AdminStaffPageHeader";
+import  AdminStaffPageHeader  from "../../components/admin/staff/AdminStaffPageHeader";
 import AdminStaffTable from "../../components/admin/staff/AdminStaffTable";
 
 const STAFFS = [
