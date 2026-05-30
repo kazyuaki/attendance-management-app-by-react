@@ -39,9 +39,9 @@ export default function AdminAttendanceListPage() {
         setIsLoading(false);
       }
     };
-    
+
     getAttendances();
-  }, [currentDate]); 
+  }, [currentDate]);
 
   // 日付を前日または翌日に変更する関数
   const changeDate = (days: number) => {
@@ -50,12 +50,12 @@ export default function AdminAttendanceListPage() {
 
     const nextDate = date.toISOString().split("T")[0]; // YYYY-MM-DD形式に変換
     setSearchParams({ date: nextDate });
-  }
+  };
 
   const handleChangeDate = (date: string) => {
     setSearchParams({ date });
-  }
-  
+  };
+
   return (
     <main className="mx-auto max-w-7xl px-6 py-10">
       <div className="mb-8 flex items-start justify-between">
