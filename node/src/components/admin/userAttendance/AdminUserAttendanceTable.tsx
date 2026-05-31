@@ -1,22 +1,57 @@
 // components/admin/userAttendance/AdminUserAttendanceTable.tsx
 
-type Attendance = {
-  id: number;
-  date: string;
-  clockIn: string;
-  clockOut: string;
-  breakTime: string;
-  totalTime: string;
-};
+import type { AdminUserAttendance } from "../../../types/AdminUserAttendance";
 
 type Props = {
-  attendances: Attendance[];
+  attendances: AdminUserAttendance[];
 };
 
 const COLUMNS = ["日付", "出勤", "退勤", "休憩時間", "実働時間"];
 
 /* スタッフ別月次勤怠一覧のテーブル */
 export default function AdminUserAttendanceTable({ attendances }: Props) {
+  // 休憩時間の計算
+  const calculateBreakTime = (attendance: AdminUserAttendance): string => {
+    const totalMinutes = attendance.break_times.reduce((sum, breakTime) => {
+      if (!breakTime.break_out) return sum;
+
+      const breakIn = new Date(`2026-01-01T${breakTime.break_in}`);
+
+      const breakOut = new Date(`2026-01-01T${breakTime.break_out}`);
+
+      return sum + (breakOut.getTime() - breakIn.getTime()) / 1000 / 60;
+    }, 0);
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    return `${hours}:${minutes.toString().padStart(2, "0")}`;
+  };
+
+  // 実働時間の計算
+  const calculateTotalTime = (attendance: AdminUserAttendance): string => {
+    if (!attendance.clock_in || !attendance.clock_out) return "0:00";
+
+    const clockIn = new Date(`2026-01-01T${attendance.clock_in}`);
+    const clockOut = new Date(`2026-01-01T${attendance.clock_out}`);
+
+    const totalMinutes =
+      (clockOut.getTime() - clockIn.getTime()) / 1000 / 60 -
+      attendance.break_times.reduce((sum, breakTime) => {
+        if (!breakTime.break_out) return sum;
+
+        const breakIn = new Date(`2026-01-01T${breakTime.break_in}`);
+        const breakOut = new Date(`2026-01-01T${breakTime.break_out}`);
+
+        return sum + (breakOut.getTime() - breakIn.getTime()) / 1000 / 60;
+      }, 0);
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    return `${hours}:${minutes.toString().padStart(2, "0")}`;
+  }
+
   return (
     <div className="mt-8 overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-100">
       <table className="w-full text-left text-base">
@@ -41,21 +76,21 @@ export default function AdminUserAttendanceTable({ attendances }: Props) {
               className="group transition hover:bg-slate-50/70"
             >
               <td className="px-6 py-4 font-semibold text-slate-900">
-                {attendance.date}
+                {attendance.work_date}
               </td>
 
-              <td className="px-6 py-4 text-slate-700">{attendance.clockIn}</td>
+              <td className="px-6 py-4 text-slate-700">{attendance.clock_in}</td>
 
               <td className="px-6 py-4 text-slate-700">
-                {attendance.clockOut}
-              </td>
-
-              <td className="px-6 py-4 text-slate-700">
-                {attendance.breakTime}
+                {attendance.clock_out}
               </td>
 
               <td className="px-6 py-4 text-slate-700">
-                {attendance.totalTime}
+                {calculateBreakTime(attendance)}
+              </td>
+
+              <td className="px-6 py-4 text-slate-700">
+                {calculateTotalTime(attendance)}
               </td>
 
               <td className="px-6 py-4">

@@ -15,7 +15,7 @@ export default function AdminUserAttendancePageHeader({
       <p className="text-base font-semibold tracking-wide text-indigo-600">
         Staff Attendance
       </p>
-      <h1 className="mt-1 text-3xl font-bold text-slate-900">勤怠一覧</h1>
+      <h1 className="mt-1 text-3xl font-bold text-slate-900">月次勤怠一覧</h1>
       <p className="mt-1 text-base text-slate-500">{month}</p>
 
       <p className="text-base text-slate-500">{userName}さんの勤怠状況</p>
