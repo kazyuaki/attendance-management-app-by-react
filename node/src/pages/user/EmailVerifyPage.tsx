@@ -1,4 +1,6 @@
 import { Mail, Send } from "lucide-react";
+import toast from "react-hot-toast";
+import { resendVerificationEmail } from "../../api/user/auth";
 
 /**
  *  メールアドレス確認ページ
@@ -7,9 +9,21 @@ import { Mail, Send } from "lucide-react";
  *  - メール内のリンクをクリックしてメールアドレスの確認が完了する（実装は後で）
  */
 export default function EmailVerifyPage() {
-	const handleOpneMailHog = () => {
-		window.open("http://localhost:8025", "_blank");
-	};
+  /* メールホグを開く関数 */
+  const handleOpneMailHog = () => {
+    window.open("http://localhost:8025", "_blank");
+  };
+
+  const handleResendEmail = async () => {
+    try {
+      await resendVerificationEmail();
+      toast.success("認証メールを再送しました");
+    } catch {
+      toast.error(
+        "認証メールの再送に失敗しました。時間をおいて再度お試しください。",
+      );
+    }
+  };
 
   return (
     <main className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-emerald-50 px-6">
@@ -31,8 +45,8 @@ export default function EmailVerifyPage() {
         </p>
         <button
           type="button"
-					className="mb-8 flex w-full items-center justify-center gap-3 rounded-xl bg-emerald-600 py-4 text-lg font-semibold text-white transition hover:bg-emerald-700"
-					onClick={handleOpneMailHog}
+          className="mb-8 flex w-full items-center justify-center gap-3 rounded-xl bg-emerald-600 py-4 text-lg font-semibold text-white transition hover:bg-emerald-700"
+          onClick={handleOpneMailHog}
         >
           <Mail size={20} />
           メールを確認する
@@ -40,7 +54,8 @@ export default function EmailVerifyPage() {
         <div className="border-t pt-8">
           <button
             type="button"
-						className="mx-auto flex items-center gap-2 text-base font-medium text-emerald-600 hover:text-emerald-700"
+            className="mx-auto flex items-center gap-2 text-base font-medium text-emerald-600 hover:text-emerald-700"
+            onClick={handleResendEmail}
           >
             <Send size={18} />
             認証メールを再送する
