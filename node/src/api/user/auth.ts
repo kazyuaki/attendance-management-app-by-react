@@ -30,6 +30,24 @@ export const userRegister = async (params: RegisterParams) => {
 };
 
 /**
+ * 認証メールの再送信を行う関数
+ * @returns 再送信成功時のレスポンスデータ
+ */
+export const resendVerificationEmail = async () => {
+  const response = await axios.post(
+    "http://localhost:8000/api/user/email/verification-notification",
+    {},
+    {
+      withCredentials: true,
+      headers: {
+        Accept: "application/json",
+      },
+    },
+  );
+  return response.data;
+};
+
+/**
  * ログインを行う関数
  * @param email - ユーザーのメールアドレス
  * @param password - ユーザーのパスワード

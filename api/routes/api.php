@@ -1,6 +1,6 @@
 <?php
 
-use GuzzleHttp\Psr7\Request;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
@@ -24,6 +24,21 @@ Route::prefix('user')->group(function () {
     // ログインユーザー取得
     Route::middleware(['web', 'auth:sanctum', 'verified'])
         ->get('/me', function (Request $request) {
-            return response()->json(Auth::user());
+            return response()->json($request->user());
         });
+
+    // メール認証
+    Route::middleware(['web', 'auth:sanctum'])
+        ->post('/email/verification-notification', function (Request $request) {
+            if ($request->user()->hasVerifiedEmail()) {
+                return response()->json([
+                    'message' => '既にメール認証済みです。',
+                ]);
+            }
+            $request->user()->sendEmailVerificationNotification();
+            return response()->json([
+                'message' => '認証メールを再送しました。',
+            ]);
+        });
+
 });
