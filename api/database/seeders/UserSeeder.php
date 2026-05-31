@@ -17,19 +17,22 @@ class UserSeeder extends Seeder
         User::create([
             'name' => '山田 太郎',
             'email' => 'yamada@attendance.com',
-            'password' => Hash::make('Password123'),
+            'email_verified_at' => now(),
+            'password' => 'Password123',
         ]);
     
         User::create([
             'name' => '佐藤 花子',
             'email' => 'sato@attendance.com',
-            'password' => Hash::make('Password123'),
+            'email_verified_at' => now(),
+            'password' => 'Password123',
         ]);
     
         User::create([
             'name' => '鈴木 一郎',
             'email' => 'suzuki@attendance.com',
-            'password' => Hash::make('Password123'),
+            'email_verified_at' => now(),
+            'password' => 'Password123',
         ]);
     }
 

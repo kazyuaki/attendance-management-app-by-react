@@ -9,17 +9,69 @@ type RegisterParams = {
   password_confirmation: string;
 };
 
+/**
+ * 会員登録を行う関数
+ * @param params - 会員登録に必要なパラメータ
+ * @returns 登録成功時のレスポンスデータ
+ */
 export const userRegister = async (params: RegisterParams) => {
-    await axios.get("http://localhost:8000/sanctum/csrf-cookie", {
-        withCredentials: true, 
-    });
+  await axios.get("http://localhost:8000/sanctum/csrf-cookie", {
+    withCredentials: true,
+  });
 
-    const response = await axios.post(
-        "http://localhost:8000/api/user/register",
-        params,
-        {
-            withCredentials: true, 
-        }
-    );
-    return response.data;
+  const response = await axios.post(
+    "http://localhost:8000/api/user/register",
+    params,
+    {
+      withCredentials: true,
+    },
+  );
+  return response.data;
+};
+
+/**
+ * ログインを行う関数
+ * @param email - ユーザーのメールアドレス
+ * @param password - ユーザーのパスワード
+ * @returns ログイン成功時のレスポンスデータ
+ */
+export const userLogin = async (email: string, password: string) => {
+  await axios.get("http://localhost:8000/sanctum/csrf-cookie", {
+    withCredentials: true,
+  });
+
+  return await axios.post(
+    "http://localhost:8000/api/user/login",
+    { email, password },
+    {
+      withCredentials: true,
+    },
+  );
+};
+
+/**
+ * ログインユーザーの情報を取得する関数
+ * @returns ログインユーザーの情報
+ */
+export const getUser = async () => {
+  const response = await axios.get("http://localhost:8000/api/user/me", {
+    withCredentials: true,
+    headers: {
+      Accept: "application/json",
+    },
+  });
+  return response.data;
+};
+
+/**
+ * ログアウトを行う関数
+ */
+export const userLogout = async () => {
+  await axios.post(
+    "http://localhost:8000/api/user/logout",
+    {},
+    {
+      withCredentials: true,
+    },
+  );
 };
