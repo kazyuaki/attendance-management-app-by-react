@@ -7,6 +7,7 @@ use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Models\AdminUser;
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
@@ -35,11 +36,12 @@ class FortifyServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Fortify::authenticateUsing(function (Request $request) {
-            $adminUser = AdminUser::where('email', $request->email)->first();
+            $user = User::where('email', $request->email)->first();
 
-            if ($adminUser && Hash::check($request->password, $adminUser->password)) {
-                return $adminUser;
+            if ($user && Hash::check($request->password, $user->password)) {
+                return $user;
             }
+
             return null;
         });
         Fortify::createUsersUsing(CreateNewUser::class);

@@ -1,8 +1,15 @@
+// src/routes/AdminProtectedRoute.tsx
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { getAdminUser } from "../api/admin/auth";
 import AdminLayout from "../components/layouts/AdminLayout";
 
+/**
+ * 管理者プロテクトルートコンポーネント
+ * - ログインしている管理者のみがアクセスできるルートを定義
+ * - getAdminUser関数を使用して管理者の認証状態を確認し、認証されていない場合はログインページにリダイレクトする
+ * - 認証されている場合は子コンポーネントを表示する
+ */
 export default function AdminProtectedRoute() {
   const [isAuthenticated, setIsAuthenticated ] = useState<boolean | null>(
     null,

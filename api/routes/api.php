@@ -1,9 +1,11 @@
 <?php
 
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,13 +14,16 @@ use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 |
 */
 Route::prefix('user')->group(function () {
+    // 会員登録
     Route::middleware('web')->post('/register', [RegisteredUserController::class, 'store']);
-    Route::middleware('web')->post('/login', [AuthenticatedSessionController::class, 'store']);  
-
-    // Route::middleware('web', 'auth:sanctum')->post('/logout', LogoutUserController::class);  
-
-    // Route::middleware(['web', 'auth'])->group(function () {
-    //     Route::get('/me', GetUserController::class);
-    //     Route::post('/logout', LogoutUserController::class);
-    // });
+    // ログイン
+    Route::middleware('web')->post('/login', [AuthenticatedSessionController::class, 'store']);
+    // ログアウト
+    Route::middleware(['web', 'auth:sanctum'])
+        ->post('/logout', [AuthenticatedSessionController::class, 'destroy']); 
+    // ログインユーザー取得
+    Route::middleware(['web', 'auth:sanctum', 'verified'])
+        ->get('/me', function (Request $request) {
+            return response()->json(Auth::user());
+        });
 });

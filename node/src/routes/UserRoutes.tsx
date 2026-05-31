@@ -3,17 +3,20 @@ import UserAttendanceClockPage from "../pages/user/UserAttendanceClockPage";
 import UserProtectedRoute from "./UserProtectedRoute";
 import UserRegisterPage from "../pages/user/UserRegisterPage";
 import EmailVerifyPage from "../pages/user/EmailVerifyPage";
+import UserLoginPage from "../pages/user/UserLoginPage";
+import UserGuestLayout from "../components/layouts/UserGuestLayout";
 
 export default function UserRoutes() {
   return (
     <Routes>
-      {/* <Route path="/login" element={<UserLoginPag />} /> */}
-
-      <Route element={<UserProtectedRoute />}>
+      {/* 未認証 */}
+      <Route element={<UserGuestLayout />}>
         <Route path="/register" element={<UserRegisterPage />} />
+        <Route path="/login" element={<UserLoginPage />} />
         <Route path="/email/verify" element={<EmailVerifyPage />} />
       </Route>
 
+      {/* 認証後 */}
       <Route element={<UserProtectedRoute />}>
         <Route path="/attendance" element={<UserAttendanceClockPage />} />
       </Route>

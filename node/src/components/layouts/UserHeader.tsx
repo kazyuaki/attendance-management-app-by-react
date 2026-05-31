@@ -1,22 +1,29 @@
 // components/layouts/AdminHeader.tsx
 import { LogOut } from "lucide-react";
-import { Link, useLocation,  } from "react-router-dom";
+import { Link, useLocation, useNavigate,  } from "react-router-dom";
+import { userLogout } from "../../api/user/auth";
+import toast from "react-hot-toast";
 
 /* 管理者用のヘッダーコンポーネント */
 export default function UserHeader() {
-//   const navigate = useNavigate();
+  const navigate = useNavigate();
   const location = useLocation();
 
-  const isLoginPage = location.pathname === "/login";
+  const isGuestPage =
+    location.pathname === "/login" ||
+    location.pathname === "/register" ||
+    location.pathname === "/email/verify";
 
-//   const handleLogout = async () => {
-//     try {
-//       await adminLogout();
-//       navigate("/admin/login");
-//     } catch (error) {
-//       console.error("ログアウト失敗:", error);
-//     }
-//   };
+  const handleLogout = async () => {
+    try {
+      await userLogout();
+      navigate("/login");
+      toast.success("ログアウトしました");
+    } catch (error) {
+      console.error("ログアウト失敗:", error);
+      toast.error("ログアウトに失敗しました");
+    }
+  };
 
   const navLinkClass = (path: string) => {
     const isActive = location.pathname.startsWith(path);
@@ -60,11 +67,11 @@ export default function UserHeader() {
 
         {/* ナビゲーション */}
         {/* ログイン画面以外で表示 */}
-        {!isLoginPage && (
+        {!isGuestPage && (
           <nav>
             <ul className="flex items-center gap-1">
               <li>
-                <Link to="/attendances" className={navLinkClass("/attendance")}>
+                <Link to="/attendance" className={navLinkClass("/attendance")}>
                   打刻
                 </Link>
               </li>
@@ -79,7 +86,10 @@ export default function UserHeader() {
                 </Link>
               </li>
               <li className="ml-3">
-                <button className="flex items-center gap-2 rounded-lg border border-emerald-300/40 px-5 py-2 text-lg font-medium text-emerald-50/80 transition-colors hover:border-emerald-100 hover:text-white">
+                <button
+                  className="flex items-center gap-2 rounded-lg border border-emerald-300/40 px-5 py-2 text-lg font-medium text-emerald-50/80 transition-colors hover:border-emerald-100 hover:text-white"
+                  onClick={handleLogout}
+                >
                   <LogOut className="h-5 w-5" />
                   ログアウト
                 </button>
