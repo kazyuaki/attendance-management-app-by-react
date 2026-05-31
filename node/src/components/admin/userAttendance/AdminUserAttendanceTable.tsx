@@ -1,5 +1,6 @@
 // components/admin/userAttendance/AdminUserAttendanceTable.tsx
 
+import { useNavigate } from "react-router-dom";
 import type { AdminUserAttendance } from "../../../types/AdminUserAttendance";
 
 type Props = {
@@ -10,6 +11,11 @@ const COLUMNS = ["日付", "出勤", "退勤", "休憩時間", "実働時間"];
 
 /* スタッフ別月次勤怠一覧のテーブル */
 export default function AdminUserAttendanceTable({ attendances }: Props) {
+  const navigate = useNavigate();
+  const handleNavigate = (attendanceId: number) => {
+    navigate(`/admin/attendances/${attendanceId}`);
+  };
+
   // 休憩時間の計算
   const calculateBreakTime = (attendance: AdminUserAttendance): string => {
     const totalMinutes = attendance.break_times.reduce((sum, breakTime) => {
@@ -94,7 +100,10 @@ export default function AdminUserAttendanceTable({ attendances }: Props) {
               </td>
 
               <td className="px-6 py-4">
-                <button className="rounded-lg bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-100">
+                <button
+                  className="rounded-lg bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-100"
+                  onClick={() => handleNavigate(attendance.id)}
+                >
                   詳細 →
                 </button>
               </td>
