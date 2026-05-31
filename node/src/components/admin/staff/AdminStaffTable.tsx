@@ -1,5 +1,4 @@
 // src/components/admin/staff/AdminStaffRow.tsx
-
 import AdminStaffRow from "./AdminStaffRow";
 
 type Staff = {
@@ -32,7 +31,8 @@ export default function AdminStaffTable({ staffs }: Props) {
         <tbody className="divide-y divide-slate-50">
           {staffs.map((staff) => (
             <AdminStaffRow
-              key={staff.id}
+							key={staff.id}
+							id={staff.id}
               name={staff.name}
               email={staff.email}
             />

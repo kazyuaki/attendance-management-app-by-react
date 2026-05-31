@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { getAdminUsers } from "../../api/admin/adminUser";
 import type { AdminUser } from "../../types/adminUser";
 
-
+/* スタッフ一覧ページ */
 export default function AdminStaffListPage() {
 	const [staffs, setStaffs] = useState<AdminUser[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
