@@ -1,6 +1,6 @@
 // src/api/admin/adminAttendance.ts
 
-import axios from "axios";
+import { adminApi } from "../../api/http";
 import type {
   AdminAttendance,
   AdminAttendanceDetail,
@@ -18,11 +18,10 @@ type AttendanceResponse = {
 export const fetchAdminAttendances = async (
   date: string,
 ): Promise<AdminAttendance[]> => {
-  const response = await axios.get<AttendanceResponse>(
-    "http://localhost:8000/api/admin/get-attendance-list",
+  const response = await adminApi.get<AttendanceResponse>(
+    "/get-attendance-list",
     {
       params: { date },
-      withCredentials: true,
     },
   );
   return response.data.data;
@@ -36,11 +35,8 @@ export const fetchAdminAttendances = async (
 export const getAdminAttendanceDetail = async (
   id: string,
 ): Promise<AdminAttendanceDetail> => {
-  const response = await axios.get<AdminAttendanceDetail>(
-    `http://localhost:8000/api/admin/get-attendance-detail/${id}`,
-    {
-      withCredentials: true,
-    },
+  const response = await adminApi.get<AdminAttendanceDetail>(
+    `/get-attendance-detail/${id}`,
   );
   return response.data;
 };
@@ -68,13 +64,7 @@ export const updateAdminAttendance = async (
   attendanceId: string,
   payload: UpdateAdminAttendancePayload,
 ) => {
-  const response = await axios.put(
-    `http://localhost:8000/api/admin/attendances/${attendanceId}`,
-    payload,
-    {
-      withCredentials: true,
-    },
-  );
+  const response = await adminApi.put(`/attendances/${attendanceId}`, payload);
 
   return response.data;
 };

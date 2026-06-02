@@ -1,6 +1,6 @@
 // src/api/user/auth.ts
 
-import axios from "axios";
+import { sanctumApi, userApi } from "../../api/http";
 
 type RegisterParams = {
   name: string;
@@ -15,17 +15,9 @@ type RegisterParams = {
  * @returns 登録成功時のレスポンスデータ
  */
 export const userRegister = async (params: RegisterParams) => {
-  await axios.get("http://localhost:8000/sanctum/csrf-cookie", {
-    withCredentials: true,
-  });
+  await sanctumApi.get("/sanctum/csrf-cookie");
 
-  const response = await axios.post(
-    "http://localhost:8000/api/user/register",
-    params,
-    {
-      withCredentials: true,
-    },
-  );
+  const response = await userApi.post("/register", params);
   return response.data;
 };
 
@@ -34,16 +26,7 @@ export const userRegister = async (params: RegisterParams) => {
  * @returns 再送信成功時のレスポンスデータ
  */
 export const resendVerificationEmail = async () => {
-  const response = await axios.post(
-    "http://localhost:8000/api/user/email/verification-notification",
-    {},
-    {
-      withCredentials: true,
-      headers: {
-        Accept: "application/json",
-      },
-    },
-  );
+  const response = await userApi.post("/email/verification-notification", {});
   return response.data;
 };
 
@@ -54,17 +37,9 @@ export const resendVerificationEmail = async () => {
  * @returns ログイン成功時のレスポンスデータ
  */
 export const userLogin = async (email: string, password: string) => {
-  await axios.get("http://localhost:8000/sanctum/csrf-cookie", {
-    withCredentials: true,
-  });
+  await sanctumApi.get("/sanctum/csrf-cookie");
 
-  return await axios.post(
-    "http://localhost:8000/api/user/login",
-    { email, password },
-    {
-      withCredentials: true,
-    },
-  );
+  return await userApi.post("/login", { email, password });
 };
 
 /**
@@ -72,12 +47,7 @@ export const userLogin = async (email: string, password: string) => {
  * @returns ログインユーザーの情報
  */
 export const getUser = async () => {
-  const response = await axios.get("http://localhost:8000/api/user/me", {
-    withCredentials: true,
-    headers: {
-      Accept: "application/json",
-    },
-  });
+  const response = await userApi.get("/me");
   return response.data;
 };
 
@@ -85,11 +55,5 @@ export const getUser = async () => {
  * ログアウトを行う関数
  */
 export const userLogout = async () => {
-  await axios.post(
-    "http://localhost:8000/api/user/logout",
-    {},
-    {
-      withCredentials: true,
-    },
-  );
+  await userApi.post("/logout", {});
 };
