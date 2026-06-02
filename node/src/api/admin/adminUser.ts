@@ -1,5 +1,5 @@
 // src/api/admin/adminUser.ts
-import axios from "axios";
+import { adminApi } from "../../api/http";
 import type { AdminUser } from "../../types/adminUser";
 
 type GetAdminUsersResponse = {
@@ -12,8 +12,9 @@ type GetAdminUsersResponse = {
  * @returns 管理者ユーザーの配列
  */
 export const getAdminUsers = async (): Promise<AdminUser[]> => {
-    const response = await axios.get<GetAdminUsersResponse>(
-      "http://localhost:8000/api/admin/get-user-list",
-    );
+  const response = await adminApi.get<GetAdminUsersResponse>(
+    "/get-user-list",
+  );
+
   return response.data.users;
-}
+};

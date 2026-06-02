@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\User\Attendance\ClockInController;
+use App\Http\Controllers\Api\User\Attendance\GetTodayAttendanceController;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
@@ -21,13 +23,22 @@ Route::prefix('user')->group(function () {
     // ログアウト
     Route::middleware(['web', 'auth:sanctum'])
         ->post('/logout', [AuthenticatedSessionController::class, 'destroy']); 
-    // ログインユーザー取得
-    Route::middleware(['web', 'auth:sanctum', 'verified'])
-        ->get('/me', function (Request $request) {
-            return response()->json($request->user());
-        });
 
-    // メール認証
+    // 認証済みユーザー向け
+    Route::middleware(['web', 'auth:sanctum', 'verified'])->group(function () {
+        // ログインユーザー取得
+        Route::get('/me', function (Request $request) {
+                return response()->json($request->user());
+            });
+        // 今日の勤怠取得
+        Route::get('/attendance/today', GetTodayAttendanceController::class);
+        // 勤怠打刻
+        Route::post('/attendance/clock-in', ClockInController::class);
+
+    });
+
+
+    // メール認証再送
     Route::middleware(['web', 'auth:sanctum'])
         ->post('/email/verification-notification', function (Request $request) {
             if ($request->user()->hasVerifiedEmail()) {
