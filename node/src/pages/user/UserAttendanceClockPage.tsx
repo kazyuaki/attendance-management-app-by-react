@@ -1,9 +1,16 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
+import {
+  clockIn,
+  getTodayAttendance,
+  type TodayAttendance,
+} from "../../api/user/attendance";
 import {
   formatDate,
   formatTime,
   calculateWorkDuration,
 } from "../../utils/attendance";
+import toast from "react-hot-toast";
 
 type AttendanceStatus = "off" | "working" | "break" | "finished";
 
@@ -35,6 +42,32 @@ function ActionButton({ label, onClick, className }: ActionButtonProps) {
     </button>
   );
 }
+// APIから取得した時刻文字列をDateオブジェクトに変換する関数
+function createDateFromTime(time: string) {
+  const [hoursString, minutesString, secondsString = "0"] = time.split(":");
+  const hours = Number(hoursString);
+  const minutes = Number(minutesString);
+  const seconds = Number(secondsString);
+  const date = new Date();
+
+  date.setHours(hours, minutes, seconds, 0);
+
+  return date;
+}
+// 勤怠情報から現在のステータスを判定する関数
+function getStatusFromAttendance(attendance: TodayAttendance): AttendanceStatus {
+  if (attendance.clock_out) {
+    return "finished";
+  }
+
+  const latestBreak = attendance.break_times.at(-1);
+
+  if (latestBreak && !latestBreak.break_out) {
+    return "break";
+  }
+
+  return "working";
+}
 
 /**
  * 勤怠打刻ページ
@@ -42,6 +75,7 @@ function ActionButton({ label, onClick, className }: ActionButtonProps) {
 export default function UserAttendanceClockPage() {
   const [currentTime, setCurrentTime] = useState("");
   const [status, setStatus] = useState<AttendanceStatus>("off");
+  const [isReady, setIsReady] = useState(false);
 
   const [clockInTime, setClockInTime] = useState<Date | null>(null);
   const [clockOutTime, setClockOutTime] = useState<Date | null>(null);
@@ -51,6 +85,41 @@ export default function UserAttendanceClockPage() {
 
   // 現在時刻を更新するための副作用
   useEffect(() => {
+    const initializeAttendance = async () => {
+      try {
+        const attendance = await getTodayAttendance();
+
+        if (!attendance) {
+          setIsReady(true);
+          return;
+        }
+
+        setClockInTime(createDateFromTime(attendance.clock_in));
+
+        const latestBreak = attendance.break_times.at(-1);
+
+        if (latestBreak) {
+          setBreakStartTime(createDateFromTime(latestBreak.break_in));
+
+          if (latestBreak.break_out) {
+            setBreakEndTime(createDateFromTime(latestBreak.break_out));
+          }
+        }
+
+        if (attendance.clock_out) {
+          setClockOutTime(createDateFromTime(attendance.clock_out));
+        }
+
+        setStatus(getStatusFromAttendance(attendance));
+      } catch (error) {
+        console.error("Failed to load attendance status:", error);
+      } finally {
+        setIsReady(true);
+      }
+    };
+
+    initializeAttendance();
+
     const updateTime = () => {
       const now = new Date();
 
@@ -65,9 +134,27 @@ export default function UserAttendanceClockPage() {
   }, []);
 
   // 出勤ボタンを押したときの処理
-  const handleClockIn = () => {
-    setClockInTime(new Date());
-    setStatus("working");
+  const handleClockIn = async () => {
+    try {
+      const response = await clockIn();
+      console.log("Clock-in successful:", response);
+
+      setClockInTime(new Date());
+      setStatus("working");
+    } catch (error) {
+      console.error("Clock-in failed:", error);
+
+      if (axios.isAxiosError(error)) {
+        const message = error.response?.data?.message;
+
+        if (typeof message === "string") {
+          toast.error(message);
+          return;
+        }
+      }
+
+      toast.error("出勤の打刻に失敗しました。再度お試しください。");
+    }
   };
 
   // 退勤ボタンを押したときの処理
@@ -175,7 +262,7 @@ export default function UserAttendanceClockPage() {
           {currentTime}
         </p>
 
-        {renderActionArea()}
+        {isReady ? renderActionArea() : null}
 
         <div className="mt-8 space-y-2 text-sm font-medium text-slate-600">
           {attendanceLogs.map((log, index) => (
