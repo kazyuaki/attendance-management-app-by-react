@@ -2,12 +2,14 @@
 
 import { userAttendanceApi } from "../../api/http";
 
+// 勤怠情報の型定義
 type TodayAttendanceBreakTime = {
   id: number;
   break_in: string;
   break_out: string | null;
 };
 
+// 今日の勤怠情報の型定義
 export type TodayAttendance = {
   id: number;
   clock_in: string;
@@ -15,10 +17,14 @@ export type TodayAttendance = {
   break_times: TodayAttendanceBreakTime[];
 };
 
+// APIレスポンスの型定義
 type TodayAttendanceResponse = {
   attendance: TodayAttendance | null;
 };
 
+/**
+ * 今日の勤怠情報を取得するAPI
+ */
 export const getTodayAttendance = async () => {
   const response = await userAttendanceApi.get<TodayAttendanceResponse>("/today");
 
@@ -46,7 +52,7 @@ export const clockOut = async () => {
 /**
  * 休憩開始時間打刻API
  */
-export const startBreak = async () => {
+export const breakIn = async () => {
   const response = await userAttendanceApi.post("/break-in");
 
   return response.data;
@@ -55,7 +61,7 @@ export const startBreak = async () => {
 /**
  * 休憩終了時間打刻API
  */
-export const endBreak = async () => {
+export const breakOut = async () => {
   const response = await userAttendanceApi.post("/break-out");
 
   return response.data;
