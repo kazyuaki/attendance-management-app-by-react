@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import {
   clockIn,
+  clockOut,
+  breakIn,
+  breakOut,
   getTodayAttendance,
   type TodayAttendance,
 } from "../../api/user/attendance";
@@ -55,7 +58,9 @@ function createDateFromTime(time: string) {
   return date;
 }
 // 勤怠情報から現在のステータスを判定する関数
-function getStatusFromAttendance(attendance: TodayAttendance): AttendanceStatus {
+function getStatusFromAttendance(
+  attendance: TodayAttendance,
+): AttendanceStatus {
   if (attendance.clock_out) {
     return "finished";
   }
@@ -158,36 +163,83 @@ export default function UserAttendanceClockPage() {
   };
 
   // 退勤ボタンを押したときの処理
-  const handleClockOut = () => {
-    const now = new Date();
+  const handleClockOut = async () => {
+    try {
+      await clockOut();
 
-    setClockOutTime(now);
+      const now = new Date();
+      setClockOutTime(now);
 
-    // 勤務時間の計算
-    if (clockInTime) {
-      const duration = calculateWorkDuration(
-        clockInTime,
-        now,
-        breakStartTime,
-        breakEndTime,
-      );
+      // 勤務時間の計算
+      if (clockInTime) {
+        const duration = calculateWorkDuration(
+          clockInTime,
+          now,
+          breakStartTime,
+          breakEndTime,
+        );
 
-      setWorkDuration(duration);
+        setWorkDuration(duration);
+      }
+      setStatus("finished");
+    } catch (error) {
+      console.error("Clock-out failed:", error);
+
+      if (axios.isAxiosError(error)) {
+        const message = error.response?.data?.message;
+
+        if (typeof message === "string") {
+          toast.error(message);
+          return;
+        }
+      }
+      toast.error("退勤の打刻に失敗しました。");
     }
-
-    setStatus("finished");
   };
 
   // 休憩開始ボタンを押したときの処理
-  const handleBreakStart = () => {
-    setBreakStartTime(new Date());
-    setStatus("break");
+  const handleBreakStart = async () => {
+    try {
+      await breakIn();
+
+      setBreakStartTime(new Date());
+      setBreakEndTime(null);
+      setStatus("break");
+    } catch (error) {
+      console.error("Failed to start break:", error);
+
+      if (axios.isAxiosError(error)) {
+        const message = error.response?.data?.message;
+
+        if (typeof message === "string") {
+          toast.error(message);
+          return;
+        }
+      }
+      toast.error("休憩開始の打刻に失敗しました。");
+    }
   };
 
   // 休憩終了ボタンを押したときの処理
-  const handleBreakEnd = () => {
-    setBreakEndTime(new Date());
-    setStatus("working");
+  const handleBreakEnd = async () => {
+    try {
+      await breakOut();
+
+      setBreakEndTime(new Date());
+      setStatus("working");
+    } catch (error) {
+      console.error("Failed to end break:", error);
+
+      if (axios.isAxiosError(error)) {
+        const message = error.response?.data?.message;
+
+        if (typeof message === "string") {
+          toast.error(message);
+          return;
+        }
+      }
+      toast.error("休憩終了の打刻に失敗しました。");
+    }
   };
 
   // 現在のステータスに応じたアクションエリアをレンダリングする関数
