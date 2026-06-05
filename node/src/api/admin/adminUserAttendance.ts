@@ -1,5 +1,5 @@
 import { adminApi } from "../../api/http";
-import type { AdminUserAttendanceResponse } from "../../types/AdminUserAttendance";
+import type { AdminUserAttendanceResponse } from "../../types/adminUserAttendance";
 
 export const fetchAdminUserAttendanceList = async (
     userId: number,
@@ -10,4 +10,3 @@ export const fetchAdminUserAttendanceList = async (
 
     return response.data;
 };
-

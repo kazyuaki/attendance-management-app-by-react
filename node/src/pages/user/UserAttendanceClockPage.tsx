@@ -92,10 +92,16 @@ export default function UserAttendanceClockPage() {
   useEffect(() => {
     const initializeAttendance = async () => {
       try {
+        setStatus("off")
+        setClockInTime(null)
+        setClockOutTime(null)
+        setBreakStartTime(null)
+        setBreakEndTime(null)
+        setWorkDuration(null)
+
         const attendance = await getTodayAttendance();
 
         if (!attendance) {
-          setIsReady(true);
           return;
         }
 

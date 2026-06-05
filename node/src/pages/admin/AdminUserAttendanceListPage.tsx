@@ -4,7 +4,7 @@ import AdminUserAttendanceTable from "../../components/admin/userAttendance/Admi
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchAdminUserAttendanceList } from "../../api/admin/adminUserAttendance";
-import type { AdminUserAttendance } from "../../types/AdminUserAttendance";
+import type { AdminUserAttendance } from "../../types/adminUserAttendance";
 
 /* スタッフ別月次勤怠一覧ページ */
 export default function AdminUserAttendanceListPage() {

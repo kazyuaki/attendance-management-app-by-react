@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import UserAttendanceClockPage from "../pages/user/UserAttendanceClockPage";
+import UserAttendanceListPage from "../pages/user/UserAttendanceListPage";
 import UserProtectedRoute from "./UserProtectedRoute";
 import UserRegisterPage from "../pages/user/UserRegisterPage";
 import EmailVerifyPage from "../pages/user/EmailVerifyPage";
@@ -19,6 +20,7 @@ export default function UserRoutes() {
       {/* 認証後 */}
       <Route element={<UserProtectedRoute />}>
         <Route path="/attendance" element={<UserAttendanceClockPage />} />
+        <Route path="/attendances" element={<UserAttendanceListPage />} />
       </Route>
     </Routes>
   );

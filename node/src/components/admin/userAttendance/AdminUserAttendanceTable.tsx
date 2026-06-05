@@ -1,7 +1,7 @@
 // components/admin/userAttendance/AdminUserAttendanceTable.tsx
 
 import { useNavigate } from "react-router-dom";
-import type { AdminUserAttendance } from "../../../types/AdminUserAttendance";
+import type { AdminUserAttendance } from "../../../types/adminUserAttendance";
 
 type Props = {
   attendances: AdminUserAttendance[];

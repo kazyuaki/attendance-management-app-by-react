@@ -76,7 +76,7 @@ export default function UserHeader() {
                 </Link>
               </li>
               <li>
-                <Link to="attendances" className={navLinkClass("/attendances")}>
+                <Link to="/attendances" className={navLinkClass("/attendances")}>
                   勤怠一覧
                 </Link>
               </li>
