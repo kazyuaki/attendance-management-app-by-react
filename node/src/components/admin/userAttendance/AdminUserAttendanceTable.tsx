@@ -2,6 +2,10 @@
 
 import { useNavigate } from "react-router-dom";
 import type { AdminUserAttendance } from "../../../types/adminUserAttendance";
+import {
+  formatAttendanceListDate,
+  formatAttendanceTime,
+} from "../../../utils/attendance";
 
 type Props = {
   attendances: AdminUserAttendance[];
@@ -82,13 +86,15 @@ export default function AdminUserAttendanceTable({ attendances }: Props) {
               className="group transition hover:bg-slate-50/70"
             >
               <td className="px-6 py-4 font-semibold text-slate-900">
-                {attendance.work_date}
+                {formatAttendanceListDate(attendance.work_date)}
               </td>
 
-              <td className="px-6 py-4 text-slate-700">{attendance.clock_in}</td>
+              <td className="px-6 py-4 text-slate-700">
+                {formatAttendanceTime(attendance.clock_in)}
+              </td>
 
               <td className="px-6 py-4 text-slate-700">
-                {attendance.clock_out}
+                {formatAttendanceTime(attendance.clock_out)}
               </td>
 
               <td className="px-6 py-4 text-slate-700">

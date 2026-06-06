@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\User\Attendance\BreakInController;
 use App\Http\Controllers\Api\User\Attendance\BreakOutController;
 use App\Http\Controllers\Api\User\Attendance\ClockOutController;
 use App\Http\Controllers\Api\User\Attendance\GetTodayAttendanceController;
+use App\Http\Controllers\Api\User\Attendance\GetUserAttendanceListController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
@@ -32,13 +33,16 @@ Route::prefix('user')->group(function () {
                 return response()->json($request->user());
             });
         // 今日の勤怠取得
-        Route::get('/attendance/today', GetTodayAttendanceController::class);
+        Route::get('/attendance/get-today-attendance', GetTodayAttendanceController::class);
         
         // 出勤、休憩開始、休憩終了、退勤
         Route::post('/attendance/clock-in', ClockInController::class);
         Route::post('/attendance/break-in', BreakInController::class);
         Route::post('/attendance/break-out', BreakOutController::class);
         Route::post('/attendance/clock-out', ClockOutController::class);
+
+        // 月次勤怠一覧
+        Route::get('attendance/get-user-attendance-list', GetUserAttendanceListController::class);
 
     });
 

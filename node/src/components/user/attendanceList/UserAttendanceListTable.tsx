@@ -7,7 +7,7 @@ type Props = {
   attendances: UserAttendance[];
 };
 
-const COLUMNS = ["日付", "出勤", "退勤", "休憩", "合計", "詳細"];
+const COLUMNS = ["日付", "出勤", "退勤", "休憩時間", "実働時間", "詳細"];
 
 /* ユーザー勤怠一覧テーブル */
 export default function UserAttendanceListTable({ attendances }: Props) {

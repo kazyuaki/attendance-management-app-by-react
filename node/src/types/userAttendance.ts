@@ -3,9 +3,19 @@
 // ユーザー勤怠情報の型定義
 export type UserAttendance = {
   id: number;
-  date: string;
+  work_date: string;
   clockIn: string;
-  clockOut: string;
+  clockOut: string | null;
+  breakTime: string;
+  totalTime: string;
+};
+
+// ユーザー勤怠情報のレスポンス型定義
+export type UserAttendanceResponse = {
+  id: number;
+  work_date: string;
+  clockIn: string;
+  clockOut: string | null;
   breakTime: string;
   totalTime: string;
 };
