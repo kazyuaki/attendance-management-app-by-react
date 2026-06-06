@@ -3,30 +3,8 @@ import UserAttendanceListPageHeader from "../../components/user/attendanceList/U
 import UserMonthNavigation from "../../components/user/attendanceList/UserMonthNavigation";
 import UserAttendanceListTable from "../../components/user/attendanceList/UserAttendanceListTable";
 import type { UserAttendance } from "../../types/userAttendance";
-
-const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
-
-const createMonthAttendances = (month: string): UserAttendance[] => {
-  const [year, monthNumber] = month.split("-").map(Number);
-  const daysInMonth = new Date(year, monthNumber, 0).getDate();
-
-  return Array.from({ length: daysInMonth }, (_, index) => {
-    const day = index + 1;
-    const date = new Date(year, monthNumber - 1, day);
-    const isHoliday = date.getDay() === 0 || date.getDay() === 6;
-
-    return {
-      id: day,
-      date: `${monthNumber}/${String(day).padStart(2, "0")}(${
-        WEEKDAYS[date.getDay()]
-      })`,
-      clockIn: isHoliday ? "" : "09:00",
-      clockOut: isHoliday ? "" : "18:00",
-      breakTime: isHoliday ? "" : "1:00",
-      totalTime: isHoliday ? "" : "8:00",
-    };
-  });
-};
+import { fetchUserAttendances } from "../../api/user/attendance";
+import { useEffect, useState } from "react";
 
 const formatMonthLabel = (month: string) => {
   const [year, monthNumber] = month.split("-");
@@ -38,7 +16,8 @@ const formatMonthLabel = (month: string) => {
 export default function UserAttendanceListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentMonth = searchParams.get("month") || "2026-06";
-  const attendances = createMonthAttendances(currentMonth);
+  const [attendances, setAttendances] = useState<UserAttendance[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const changeMonth = (amount: number) => {
     const date = new Date(`${currentMonth}-01`);
@@ -55,6 +34,33 @@ export default function UserAttendanceListPage() {
 
     setSearchParams({ month });
   };
+
+  useEffect(() => {
+    const getAttendances = async () => {
+      try {
+        setIsLoading(true);
+
+        const data = await fetchUserAttendances(currentMonth);
+
+        console.log(data);
+
+        setAttendances(data);
+      } catch (error) {
+        console.error("勤怠一覧取得失敗", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    getAttendances();
+  },[currentMonth]);
+
+if (isLoading) {
+  return (
+    <div className="flex h-64 items-center justify-center">
+      <p>読み込み中...</p>
+    </div>
+  );
+}
 
   return (
     <main className="mx-auto max-w-7xl px-6 py-10">

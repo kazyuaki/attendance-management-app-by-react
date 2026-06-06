@@ -8,7 +8,7 @@ type Props = {
 export default function UserAttendanceListPageHeader({ monthLabel }: Props) {
   return (
     <div className="mb-8">
-      <p className="text-base font-semibold tracking-wide text-indigo-600">
+      <p className="text-base font-semibold tracking-wide text-emerald-600">
         Attendance
       </p>
 
