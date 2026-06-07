@@ -28,47 +28,47 @@ class GetUserAttendanceListController extends Controller
             ->orderBy('work_date')
             ->get();
 
-            
-            return response()->json([
-                'attendances' => $attendances->map(function ($attendance) {
-                    $workDate = Carbon::parse($attendance->work_date);
-                    $weekLabels = ['日', '月', '火', '水', '木', '金', '土'];
+        return response()->json([
+            'attendances' => $attendances->map(function ($attendance) {
+                $workDate = Carbon::parse($attendance->work_date);
+                $weekLabels = ['日', '月', '火', '水', '木', '金', '土'];
 
-                    $totalBreakMinutes = $attendance->breakTimes->sum(function ($breakTime) {
-                        if (!$breakTime->break_out) {
-                            return 0;
-                        }
-                        return Carbon::parse($breakTime->break_in)
-                            ->diffInMinutes(Carbon::parse($breakTime->break_out));
-                    });
-
-                    $totalWorkMinutes = 0;
-
-                    if ($attendance->clock_out) {
-                        $totalWorkMinutes = Carbon::parse($attendance->clock_in)
-                            ->diffInMinutes(Carbon::parse($attendance->clock_out))
-                            - $totalBreakMinutes;
+                $totalBreakMinutes = $attendance->breakTimes->sum(function ($breakTime) {
+                    if (! $breakTime->break_out) {
+                        return 0;
                     }
 
-                    $breakHours = floor($totalBreakMinutes / 60);
-                    $breakMinutes = $totalBreakMinutes % 60;
-                    $breakTime = sprintf('%d:%02d', $breakHours, $breakMinutes);
+                    return Carbon::parse($breakTime->break_in)
+                        ->diffInMinutes(Carbon::parse($breakTime->break_out));
+                });
 
-                    $totalTime = $attendance->clock_out           
-                        ? sprintf('%d:%02d', floor($totalWorkMinutes / 60), $totalWorkMinutes % 60)
-                        : '';
+                $totalWorkMinutes = 0;
+
+                if ($attendance->clock_out) {
+                    $totalWorkMinutes = Carbon::parse($attendance->clock_in)
+                        ->diffInMinutes(Carbon::parse($attendance->clock_out))
+                        - $totalBreakMinutes;
+                }
+
+                $breakHours = floor($totalBreakMinutes / 60);
+                $breakMinutes = $totalBreakMinutes % 60;
+                $breakTime = sprintf('%d:%02d', $breakHours, $breakMinutes);
+
+                $totalTime = $attendance->clock_out
+                    ? sprintf('%d:%02d', floor($totalWorkMinutes / 60), $totalWorkMinutes % 60)
+                    : '';
 
                 return [
                     'id' => $attendance->id,
-                    'work_date' => $workDate->format('m/d') . '(' . $weekLabels[$workDate->dayOfWeek] . ')',
+                    'work_date' => $workDate->format('m/d').'('.$weekLabels[$workDate->dayOfWeek].')',
                     'clockIn' => Carbon::parse($attendance->clock_in)->format('H:i'),
-                    'clockOut' => $attendance->clock_out 
+                    'clockOut' => $attendance->clock_out
                         ? Carbon::parse($attendance->clock_out)->format('H:i')
                         : null,
                     'breakTime' => $breakTime,
                     'totalTime' => $totalTime,
                 ];
-            })
+            }),
         ]);
     }
 }
