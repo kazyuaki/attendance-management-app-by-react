@@ -55,6 +55,27 @@
 
 - GitHub
 
+## 主な機能
+
+### 一般ユーザー
+
+- 会員登録・ログイン・ログアウト
+- メール認証
+- 出勤・退勤打刻
+- 休憩開始・休憩終了打刻
+- 月次勤怠一覧の確認
+- 勤怠詳細の確認
+- 勤務時間・休憩時間・備考の修正申請
+
+### 管理者
+
+- 管理者ログイン・ログアウト
+- 日別勤怠一覧の確認
+- 勤怠詳細の確認・更新
+- スタッフ一覧の確認
+- スタッフ別の月次勤怠一覧の確認
+- 申請一覧画面の表示（フロント実装）
+
 ## 開発環境
 
 ローカル環境は Docker を使用して構築します。
@@ -98,6 +119,8 @@ docker compose exec php php artisan key:generate
 docker compose exec php php artisan migrate --seed
 ```
 
+※ React 側の依存パッケージは `node` コンテナ起動時に `npm install` が実行されます。
+
 ### アクセスURL
 
 | サービス                    | URL                   |
@@ -106,6 +129,53 @@ docker compose exec php php artisan migrate --seed
 | バックエンド（Laravel API） | http://localhost:8000 |
 | phpMyAdmin                  | http://localhost:8080 |
 | MailHog                     | http://localhost:8025 |
+
+### 画面URL
+
+| 画面             | URL                         |
+| ---------------- | --------------------------- |
+| ユーザーログイン | http://localhost:5173/login |
+| 管理者ログイン   | http://localhost:5173/admin/login |
+
+### テスト用ログイン情報
+
+#### 一般ユーザー
+
+| 名前        | メールアドレス          | パスワード  |
+| ----------- | ----------------------- | ----------- |
+| 山田 太郎   | yamada@attendance.com   | Password123 |
+| 佐藤 花子   | sato@attendance.com     | Password123 |
+| 鈴木 一郎   | suzuki@attendance.com   | Password123 |
+
+#### 管理者
+
+| 名前    | メールアドレス     | パスワード |
+| ------- | ------------------ | ---------- |
+| 管理者A | adminA@example.com | passwordA1 |
+| 管理者B | adminB@example.com | passwordB1 |
+
+## よく使うコマンド
+
+### Docker
+
+```bash
+docker compose up -d
+docker compose down
+```
+
+### バックエンド
+
+```bash
+docker compose exec php php artisan migrate:fresh --seed
+docker compose exec php php artisan test
+```
+
+### フロントエンド
+
+```bash
+docker compose exec node npm run lint
+docker compose exec node npm run build
+```
 
 ## 納品方法
 
