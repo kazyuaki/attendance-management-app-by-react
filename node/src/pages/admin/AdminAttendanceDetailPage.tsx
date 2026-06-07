@@ -17,18 +17,25 @@ export default function AdminAttendanceDetailPage() {
     );
   }
 
-  if (!attendance) { 
+  if (!attendance) {
     return (
       <main className="mx-auto max-w-7xl px-6 py-10">
-        <p className="text-center text-red-500">勤怠情報が見つかりませんでした。</p>
+        <p className="text-center text-red-500">
+          勤怠情報が見つかりませんでした。
+        </p>
       </main>
-    )
+    );
   }
   return (
     <main className="mx-auto max-w-7xl px-6 py-10">
-      <h1 className="mb-12 text-2xl font-bold text-gray-900">
-        {attendance.user_name}さんの勤怠詳細
-      </h1>
+      <div className="mb-12">
+        <p className="text-base font-semibold tracking-wide text-indigo-600">
+          Attendance Detail
+        </p>
+        <h1 className="mt-1 text-3xl font-bold text-slate-900">
+          {attendance.user_name}さんの勤怠詳細
+        </h1>
+      </div>
       <AdminAttendanceDetailCard attendance={attendance} />
     </main>
   );
