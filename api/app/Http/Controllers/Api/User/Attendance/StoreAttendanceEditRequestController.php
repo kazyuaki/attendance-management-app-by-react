@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\User\Attendance;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreAttendanceEditRequestRequest;
+use App\Http\Requests\User\StoreAttendanceEditRequestRequest;
 use App\Models\Attendance;
 use App\Models\AttendanceEditRequest;
 use Illuminate\Http\JsonResponse;
@@ -16,7 +16,7 @@ class StoreAttendanceEditRequestController extends Controller
     public function __invoke(
         StoreAttendanceEditRequestRequest $request,
         Attendance $attendance
-    ) :JsonResponse {
+    ): JsonResponse {
         if ($attendance->user_id !== $request->user()->id) {
             abort(403);
         }
@@ -30,7 +30,7 @@ class StoreAttendanceEditRequestController extends Controller
             'status' => 'pending',
         ]);
 
-        foreach ($request->input('break_times', [])as $breakTime) {
+        foreach ($request->input('break_times', []) as $breakTime) {
             $attendanceEditRequest->breakTimes()->create([
                 'break_in' => $breakTime['break_in'],
                 'break_out' => $breakTime['break_out'] ?? null,

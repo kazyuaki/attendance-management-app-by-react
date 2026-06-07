@@ -42,3 +42,17 @@ export type UserAttendanceDetail = {
 export type UserAttendanceDetailResponse = {
   attendance: UserAttendanceDetail;
 };
+
+// 修正申請の休憩時間情報型定義
+export type AttendanceEditRequestBreakTime = {
+  break_in: string;
+  break_out: string | null;
+};
+
+// 修正申請登録リクエストの型定義
+export type StoreAttendanceEditRequestPayload = {
+  clock_in: string;
+  clock_out: string;
+  note: string;
+  break_times: AttendanceEditRequestBreakTime[];
+};

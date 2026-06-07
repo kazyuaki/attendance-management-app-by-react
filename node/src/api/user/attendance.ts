@@ -1,7 +1,7 @@
 // src/api/user/attendance.ts
 
 import { userAttendanceApi } from "../../api/http";
-import type { UserAttendanceDetailResponse, UserAttendanceResponse } from "../../types/userAttendance";
+import type { StoreAttendanceEditRequestPayload, UserAttendanceDetailResponse, UserAttendanceResponse } from "../../types/userAttendance";
 
 // 勤怠情報の型定義
 type TodayAttendanceBreakTime = {
@@ -95,4 +95,21 @@ export const fetchUserAttendanceDetail = async (id: string) => {
     `get-user-attendance-detail/${id}`
   )
   return response.data.attendance;
+}
+
+/**
+ * 勤怠修正申請API
+ * @param attendanceId 
+ * @param payload 
+ * @returns 
+ */
+export const storeAttendanceEditRequest = async(
+  attendanceId: number,
+  payload: StoreAttendanceEditRequestPayload,
+) => {
+  const response = await userAttendanceApi.post(
+    `/${attendanceId}/edit-request`,
+    payload,
+  )
+  return response.data;
 }
