@@ -7,7 +7,6 @@ use App\Models\User;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\Seeder;
 
-
 class AttendanceSeeder extends Seeder
 {
     /**

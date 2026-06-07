@@ -22,6 +22,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'remember_token',
     ];
+
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 

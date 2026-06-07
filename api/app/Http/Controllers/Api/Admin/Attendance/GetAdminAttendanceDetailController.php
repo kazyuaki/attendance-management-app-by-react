@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api\Admin\Attendance;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attendance;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
-use App\Models\Attendance;
 
 class GetAdminAttendanceDetailController extends Controller
 {

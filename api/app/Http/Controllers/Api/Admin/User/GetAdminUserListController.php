@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers\Api\Admin\User;
 
@@ -16,7 +16,7 @@ class GetAdminUserListController extends Controller
             ->select(['id', 'name', 'email'])
             ->orderBy('id')
             ->get();
-        
+
         return response()->json([
             'message' => 'ユーザーの一覧を取得しました。',
             'users' => $users,

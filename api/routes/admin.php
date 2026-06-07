@@ -31,6 +31,7 @@ Route::prefix('admin')->group(function () {
             Auth::guard('admin')->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
+
             return response()->json([
                 'message' => 'ログアウトしました。',
             ]);
@@ -52,4 +53,3 @@ Route::prefix('admin')->group(function () {
         Route::get('/users/{userId}/get-user-attendance-list', GetAdminUserAttendanceListController::class);
     });
 });
-

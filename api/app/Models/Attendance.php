@@ -24,6 +24,7 @@ class Attendance extends Model
     {
         return $this->belongsTo(User::class);
     }
+
     // 休憩時間とのリレーション
     public function breakTimes(): HasMany
     {

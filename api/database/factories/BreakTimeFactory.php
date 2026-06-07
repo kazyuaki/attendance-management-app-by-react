@@ -8,7 +8,6 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class BreakTimeFactory extends Factory
-
 {
     protected $model = BreakTime::class;
 
@@ -31,5 +30,4 @@ class BreakTimeFactory extends Factory
             'break_out' => $breakOut->format('H:i:s'),
         ];
     }
-
 }
