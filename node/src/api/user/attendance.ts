@@ -1,7 +1,7 @@
 // src/api/user/attendance.ts
 
 import { userAttendanceApi } from "../../api/http";
-import type { UserAttendanceResponse } from "../../types/userAttendance";
+import type { UserAttendanceDetailResponse, UserAttendanceResponse } from "../../types/userAttendance";
 
 // 勤怠情報の型定義
 type TodayAttendanceBreakTime = {
@@ -84,3 +84,15 @@ export const fetchUserAttendances = async (month: string) => {
 
   return response.data.attendances;
 };
+
+/**
+ * 勤怠詳細取得API
+ * @param id 
+ * @returns 
+ */
+export const fetchUserAttendanceDetail = async (id: string) => {
+  const response = await userAttendanceApi.get<UserAttendanceDetailResponse>(
+    `get-user-attendance-detail/${id}`
+  )
+  return response.data.attendance;
+}
