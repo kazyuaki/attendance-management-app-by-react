@@ -11,14 +11,13 @@ use Illuminate\Http\Request;
 
 class GetAttendanceListController extends Controller
 {
-     /**
+    /**
      * 勤怠一覧取得
      */
     public function __invoke(
         Request $request,
         AttendanceTimeService $attendanceTimeService
-    ): JsonResponse
-    {
+    ): JsonResponse {
         // クエリパラメータから日付取得
         $date = $request->query('date', '2026-06-01');
 

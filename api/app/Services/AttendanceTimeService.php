@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Attendance;
-
 use Carbon\Carbon;
 
 class AttendanceTimeService
@@ -14,7 +13,7 @@ class AttendanceTimeService
     public function calculateBreakMinutes(Attendance $attendance): int
     {
         return $attendance->breakTimes->sum(function ($breakTime) {
-            if (!$breakTime->break_out) {
+            if (! $breakTime->break_out) {
                 return 0;
             }
 
@@ -28,7 +27,7 @@ class AttendanceTimeService
      */
     public function calculateTotalMinutes(Attendance $attendance, int $breakMinutes): int
     {
-        if (!$attendance->clock_out) {
+        if (! $attendance->clock_out) {
             return 0;
         }
 

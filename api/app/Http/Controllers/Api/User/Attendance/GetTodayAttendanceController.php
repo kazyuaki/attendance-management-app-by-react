@@ -32,13 +32,12 @@ class GetTodayAttendanceController extends Controller
             }
         }
 
-        if (!$attendance) {
+        if (! $attendance) {
             return response()->json([
                 'status' => null,
                 'attendance' => null,
             ]);
         }
-
 
         return response()->json([
             'status' => $status,
@@ -53,7 +52,7 @@ class GetTodayAttendanceController extends Controller
                         'break_out' => $breakTime->break_out ? Carbon::parse($breakTime->break_out)->format('H:i') : null,
                     ];
                 }),
-   
+
             ],
         ]);
     }

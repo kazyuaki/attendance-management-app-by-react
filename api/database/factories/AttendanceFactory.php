@@ -15,17 +15,16 @@ class AttendanceFactory extends Factory
         $clocInHour = fake()->numberBetween(8, 10);
 
         $clockIn = sprintf(
-            '%02d:%02d:00', 
+            '%02d:%02d:00',
             $clocInHour,
             fake()->randomElement([0, 15, 30, 45])
         );
 
         $clockOut = sprintf(
-            '%02d:%02d:00', 
+            '%02d:%02d:00',
             $clocInHour + 9,
             fake()->randomElement([0, 15, 30, 45])
         );
-
 
         return [
             'user_id' => User::factory(),

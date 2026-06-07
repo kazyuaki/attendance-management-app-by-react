@@ -23,7 +23,7 @@ class UpdateAdminAttendanceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'clock_in' => ['required', 'date_format:H:i'],        
+            'clock_in' => ['required', 'date_format:H:i'],
             'clock_out' => ['required', 'date_format:H:i', 'after:clock_in'],
             'break_times' => ['array'],
             'break_times.*.break_in' => [

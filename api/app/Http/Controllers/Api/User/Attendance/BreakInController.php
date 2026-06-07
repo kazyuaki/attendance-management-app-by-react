@@ -19,7 +19,7 @@ class BreakInController extends Controller
             ->where('work_date', today())
             ->first();
 
-        if (!$attendance) {
+        if (! $attendance) {
             return response()->json([
                 'message' => '本日の勤怠情報がありません。',
             ], 422);
@@ -29,7 +29,7 @@ class BreakInController extends Controller
         $activeBreak = BreakTime::where('attendance_id', $attendance->id)
             ->whereNull('break_out')
             ->exists();
-        
+
         if ($activeBreak) {
             return response()->json([
                 'message' => '既に休憩中です。',

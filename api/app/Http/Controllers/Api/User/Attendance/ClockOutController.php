@@ -15,11 +15,11 @@ class ClockOutController extends Controller
     public function __invoke(Request $request)
     {
         // 今日の勤怠情報を取得
-        $attendance = Attendance::where('user_id', $request->user()->id) 
+        $attendance = Attendance::where('user_id', $request->user()->id)
             ->where('work_date', today())
             ->first();
-        
-        if (!$attendance) {
+
+        if (! $attendance) {
             return response()->json([
                 'message' => '本日の勤怠情報がありません。',
             ], 422);
@@ -35,7 +35,7 @@ class ClockOutController extends Controller
         $activeBreak = BreakTime::where('attendance_id', $attendance->id)
             ->whereNull('break_out')
             ->exists();
-        
+
         if ($activeBreak) {
             return response()->json([
                 'message' => '休憩中のため退勤できません。',

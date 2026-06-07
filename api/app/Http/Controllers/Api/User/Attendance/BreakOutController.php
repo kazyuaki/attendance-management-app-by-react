@@ -13,7 +13,7 @@ class BreakOutController extends Controller
      * 休憩終了を記録する。
      */
     public function __invoke(Request $request)
-    { 
+    {
         // 今日の勤怠情報を取得
         $attendance = Attendance::where('user_id', $request->user()->id)
             ->where('work_date', today())
@@ -23,8 +23,8 @@ class BreakOutController extends Controller
         $break = BreakTime::where('attendance_id', $attendance->id)
             ->whereNull('break_out')
             ->first();
-        
-        if (!$break) {
+
+        if (! $break) {
             return response()->json([
                 'message' => '休憩中ではありません。',
             ], 422);

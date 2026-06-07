@@ -14,9 +14,9 @@ class AdminLoginController extends Controller
         $credentials = $request->only('email', 'password');
 
         // 管理者ユーザーでの認証を試みる
-        if (!Auth::guard('admin')->attempt($credentials)) {
+        if (! Auth::guard('admin')->attempt($credentials)) {
             return response()->json([
-                'message' => 'ログイン情報が正しくありません。'
+                'message' => 'ログイン情報が正しくありません。',
             ], 401);
         }
 
