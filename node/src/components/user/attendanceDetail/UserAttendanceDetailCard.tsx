@@ -36,7 +36,6 @@ export default function UserAttendanceDetailCard({ attendance }: Props) {
   const [errors, setErrors] = useState<ValidationErrors>({});
   const navigate = useNavigate();
 
-
   const validate = (): ValidationErrors => {
     const errors: ValidationErrors = {};
     const breakTimeErrors: ValidationErrors["break_times"] = [];
@@ -193,17 +192,13 @@ export default function UserAttendanceDetailCard({ attendance }: Props) {
         {errors.clock_in && (
           <div className="flex px-8 pt-1">
             <div className="w-40" />
-            <p className="px-8 pt-1 text-sm text-red-500">
-              {errors.clock_in}
-            </p>
+            <p className="px-8 pt-1 text-sm text-red-500">{errors.clock_in}</p>
           </div>
         )}
         {errors.clock_out && (
           <div className="flex px-8 pt-1">
             <div className="w-40" />
-            <p className="px-8 pt-1 text-sm text-red-500">
-              {errors.clock_out}
-            </p>
+            <p className="px-8 pt-1 text-sm text-red-500">{errors.clock_out}</p>
           </div>
         )}
         {/* 休憩時間 */}
@@ -243,9 +238,14 @@ export default function UserAttendanceDetailCard({ attendance }: Props) {
         <div className="flex items-start px-8 py-5">
           <p className="w-40 pt-1 text-lg font-medium text-gray-400">備考</p>
           <div className="w-full">
+            <p className="mb-2 text-sm text-gray-500">
+              ※申請理由と詳細を記入してください
+            </p>
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
+              placeholder={`例）通院のため早退
+          退勤時刻 18:15 → 16:00`}
               className="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-lg text-gray-800 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
               rows={4}
             />

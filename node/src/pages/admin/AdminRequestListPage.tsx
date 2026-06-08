@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { getAdminRequests } from "../../api/admin/adminRequest";
 import { AdminRequestsEmptyState } from "../../components/admin/requests/AdminRequestsEmptyState";
 import { AdminRequestsFilter } from "../../components/admin/requests/AdminRequestsFilter";
 import { AdminRequestsPageHeader } from "../../components/admin/requests/AdminRequestsPageHeader";
@@ -8,49 +9,30 @@ import type {
   AdminRequestStatus,
 } from "../../types/adminRequest";
 
-const REQUESTS: AdminRequest[] = [
-  {
-    id: 1,
-    type: "勤怠修正",
-    status: "pending",
-    userName: "西 怜奈",
-    targetDate: "2023/06/01",
-    reason: "遅延のため",
-    requestedAt: "2023/08/02 09:12",
-    updatedAt: "2023/08/02 09:12",
-  },
-  {
-    id: 2,
-    type: "勤怠修正",
-    status: "approved",
-    userName: "山田 太郎",
-    targetDate: "2023/06/05",
-    reason: "打刻漏れ",
-    requestedAt: "2023/08/03 18:41",
-    updatedAt: "2023/08/04 10:20",
-  },
-  {
-    id: 3,
-    type: "休憩修正",
-    status: "pending",
-    userName: "佐藤 花子",
-    targetDate: "2023/06/08",
-    reason: "休憩時間の入力間違い",
-    requestedAt: "2023/08/05 13:05",
-    updatedAt: "2023/08/05 13:05",
-  },
-];
-
 /* 管理者用の申請一覧ページ */
 export default function AdminRequestListPage() {
+  const [requests, setRequests] = useState<AdminRequest[]>([]);
   const [activeTab, setActiveTab] = useState<AdminRequestStatus>("pending");
   const [searchTerm, setSearchTerm] = useState("");
 
+  useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const data = await getAdminRequests();
+        setRequests(data);
+      } catch (error) {
+        console.error("申請一覧の取得に失敗しました:", error);
+      }
+    };
+
+    fetchRequests();
+  }, []);
+
   // ステータスごとの申請数をカウント
-  const pendingCount = REQUESTS.filter(
+  const pendingCount = requests.filter(
     (request) => request.status === "pending",
   ).length;
-  const approvedCount = REQUESTS.filter(
+  const approvedCount = requests.filter(
     (request) => request.status === "approved",
   ).length;
 
@@ -58,7 +40,7 @@ export default function AdminRequestListPage() {
   const filteredRequests = useMemo(() => {
     const keyword = searchTerm.trim().toLowerCase();
 
-    return REQUESTS.filter((request) => {
+    return requests.filter((request) => {
       const matchesStatus = request.status === activeTab;
       const matchesKeyword =
         keyword.length === 0 ||
@@ -68,7 +50,7 @@ export default function AdminRequestListPage() {
 
       return matchesStatus && matchesKeyword;
     });
-  }, [activeTab, searchTerm]);
+  }, [activeTab, requests, searchTerm]);
 
   return (
     <main className="mx-auto max-w-7xl px-6 py-10">
