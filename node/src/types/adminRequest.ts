@@ -13,3 +13,14 @@ export type AdminRequest = {
   requestedAt: string;
   updatedAt: string;
 };
+
+// 管理者用の申請のレスポンス型定義
+export type AdminRequestResponse = {
+  id: number;
+  status: AdminRequestStatus;
+  user_name: string;
+  target_date: string;
+  note: string;
+  created_at: string;
+  updated_at: string;
+};
