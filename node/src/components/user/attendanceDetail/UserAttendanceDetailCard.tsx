@@ -1,5 +1,5 @@
 // src/components/user/attendanceDetail/UserAttendanceDetailCard.tsx
-
+import axios from "axios";
 import UserAttendanceTimeRow from "./UserAttendanceTimeRow";
 import UserAttendanceBreakRow from "./UserAttendanceBreakRow";
 import type { UserAttendanceDetail } from "../../../types/userAttendance";
@@ -35,6 +35,7 @@ export default function UserAttendanceDetailCard({ attendance }: Props) {
   );
   const [errors, setErrors] = useState<ValidationErrors>({});
   const navigate = useNavigate();
+  const isPendingRequest = attendance.is_pending_request;
 
   const validate = (): ValidationErrors => {
     const errors: ValidationErrors = {};
@@ -132,6 +133,13 @@ export default function UserAttendanceDetailCard({ attendance }: Props) {
       navigate("/attendances");
     } catch (error) {
       console.error("修正申請に失敗しました:", error);
+
+      if (axios.isAxiosError(error) && error.response?.status === 409) {
+        toast.error(
+          error.response.data.message ?? "承認待ちの申請があるため、修正できません。"
+        )
+      }
+
       toast.error("修正申請に失敗しました.");
     }
   };
@@ -188,6 +196,7 @@ export default function UserAttendanceDetailCard({ attendance }: Props) {
           end={clockOut}
           onStartChange={setClockIn}
           onEndChange={setClockOut}
+          disabled={isPendingRequest}
         />
         {errors.clock_in && (
           <div className="flex px-8 pt-1">
@@ -214,6 +223,7 @@ export default function UserAttendanceDetailCard({ attendance }: Props) {
               onBreakOutChange={(value) =>
                 handleBreakTimeChange(index, "break_out", value)
               }
+              disabled={isPendingRequest}
             />
             {errors.break_times?.[index]?.break_in && (
               <div className="flex px-8 pt-1">
@@ -244,6 +254,7 @@ export default function UserAttendanceDetailCard({ attendance }: Props) {
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
+              disabled={isPendingRequest}
               placeholder={`例）通院のため早退
           退勤時刻 18:15 → 16:00`}
               className="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-lg text-gray-800 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
@@ -257,14 +268,19 @@ export default function UserAttendanceDetailCard({ attendance }: Props) {
       </div>
 
       {/* ボタン */}
-      <div className="flex justify-end">
+      <div className="flex flex-col items-end gap-3">
         <button
           onClick={handleSubmit}
-          disabled={hasRequiredInputError}
+          disabled={hasRequiredInputError || isPendingRequest}
           className="rounded-lg bg-emerald-600 px-5 py-2.5 text-lg font-semibold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400"
         >
           修正申請
         </button>
+        {isPendingRequest && (
+          <p className="text-sm font-semibold text-red-500">
+            承認待ちのため修正できません
+          </p>
+        )}
       </div>
     </div>
   );

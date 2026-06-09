@@ -36,6 +36,7 @@ export type UserAttendanceDetail = {
   clock_out: string;
   note: string;
   break_times: UserAttendanceDetailBreakTime[];
+  is_pending_request: boolean;
 };
 
 // ユーザー勤怠詳細情報のレスポンス型定義
