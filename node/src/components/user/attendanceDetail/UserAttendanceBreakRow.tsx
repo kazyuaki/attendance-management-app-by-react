@@ -6,6 +6,7 @@ type Props = {
   breakOut: string;
   onBreakInChange: (value: string) => void;
   onBreakOutChange: (value: string) => void;
+  disabled?: boolean;
 };
 
 export default function UserAttendanceBreakRow({
@@ -14,6 +15,7 @@ export default function UserAttendanceBreakRow({
   breakOut,
   onBreakInChange,
   onBreakOutChange,
+  disabled,
 }: Props) {
   return (
     <div className="flex items-center border-b border-gray-100 px-8 py-5">
@@ -24,6 +26,7 @@ export default function UserAttendanceBreakRow({
           type="time"
           value={breakIn}
           onChange={(e) => onBreakInChange(e.target.value)}
+          disabled={disabled}
           className="w-32 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-lg text-gray-800 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
         />
 
@@ -33,6 +36,7 @@ export default function UserAttendanceBreakRow({
           type="time"
           value={breakOut}
           onChange={(e) => onBreakOutChange(e.target.value)}
+          disabled={disabled}
           className="w-32 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-lg text-gray-800 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
         />
       </div>

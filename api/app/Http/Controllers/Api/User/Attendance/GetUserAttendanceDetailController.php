@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\User\Attendance;
 
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
+use App\Models\AttendanceEditRequest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -19,6 +20,10 @@ class GetUserAttendanceDetailController extends Controller
         }
 
         $attendance->load('breakTimes');
+
+        $isPendingRequest = AttendanceEditRequest::where('attendance_id', $attendance->id)
+            ->where('status', 'pending')
+            ->exists();
 
         return response()->json([
             'attendance' => [
@@ -39,6 +44,7 @@ class GetUserAttendanceDetailController extends Controller
                             : null,
                     ];
                 }),
+                'is_pending_request' => $isPendingRequest,
             ],
         ]);
     }

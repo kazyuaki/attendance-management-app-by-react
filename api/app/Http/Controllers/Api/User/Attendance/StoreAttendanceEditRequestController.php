@@ -37,6 +37,16 @@ class StoreAttendanceEditRequestController extends Controller
             ]);
         }
 
+        $existsPendingRequest = AttendanceEditRequest::where('attendance_id', $attendance->id)
+            ->where('status', 'pending')
+            ->exists();
+
+        if ($existsPendingRequest) {
+            return response()->json([
+                'message' => '承認待ちの申請があるため、修正できません。'
+            ], 409);
+        }
+
         return response()->json([
             'message' => '勤怠修正申請を送信しました。',
         ], 201);

@@ -6,6 +6,7 @@ type Props = {
   end: string;
   onStartChange: (value: string) => void;
   onEndChange: (value: string) => void;
+  disabled?: boolean;
 };
 
 export default function UserAttendanceTimeRow({
@@ -14,6 +15,7 @@ export default function UserAttendanceTimeRow({
   end,
   onStartChange,
   onEndChange,
+  disabled,
 }: Props) {
   return (
     <div className="flex items-center border-b border-gray-100 px-8 py-5">
@@ -24,7 +26,9 @@ export default function UserAttendanceTimeRow({
           type="time"
           value={start}
           onChange={(e) => onStartChange(e.target.value)}
+          disabled={disabled}
           className="w-32 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-lg text-gray-800 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
+
         />
 
         <span className="text-gray-400">〜</span>
@@ -33,6 +37,7 @@ export default function UserAttendanceTimeRow({
           type="time"
           value={end}
           onChange={(e) => onEndChange(e.target.value)}
+          disabled={disabled}
           className="w-32 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-lg text-gray-800 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
         />
       </div>
