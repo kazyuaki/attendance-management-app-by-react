@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\User\Attendance\BreakOutController;
 use App\Http\Controllers\Api\User\Attendance\ClockInController;
 use App\Http\Controllers\Api\User\Attendance\ClockOutController;
 use App\Http\Controllers\Api\User\Attendance\GetTodayAttendanceController;
+use App\Http\Controllers\Api\User\Attendance\GetUserAttendanceEditRequestListController;
 use App\Http\Controllers\Api\User\Attendance\GetUserAttendanceDetailController;
 use App\Http\Controllers\Api\User\Attendance\GetUserAttendanceListController;
 use App\Http\Controllers\Api\User\Attendance\StoreAttendanceEditRequestController;
@@ -49,6 +50,8 @@ Route::prefix('user')->group(function () {
         Route::get('attendance/get-user-attendance-detail/{attendance}', GetUserAttendanceDetailController::class);
         // 修正申請送信
         Route::post('attendance/{attendance}/edit-request', StoreAttendanceEditRequestController::class);
+        // 修正申請一覧
+        Route::get('attendance/edit-requests', GetUserAttendanceEditRequestListController::class);
 
     });
 
