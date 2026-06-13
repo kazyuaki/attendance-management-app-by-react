@@ -21,8 +21,8 @@ class GetUserAttendanceDetailController extends Controller
 
         $attendance->load('breakTimes');
 
-        $isPendingRequest = AttendanceEditRequest::where('attendance_id', $attendance->id)
-            ->where('status', 'pending')
+        $isAttendanceEditRequested = AttendanceEditRequest::where('attendance_id', $attendance->id)
+            ->whereIn('status', ['pending', 'approved'])
             ->exists();
 
         return response()->json([
@@ -44,7 +44,7 @@ class GetUserAttendanceDetailController extends Controller
                             : null,
                     ];
                 }),
-                'is_pending_request' => $isPendingRequest,
+                'is_attendance_edit_requested' => $isAttendanceEditRequested,
             ],
         ]);
     }
