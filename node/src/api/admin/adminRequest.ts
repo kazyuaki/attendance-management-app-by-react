@@ -32,21 +32,37 @@ export const getAdminRequestDetail = async (
     `get-admin-request-detail/${requestId}`,
   );
 
+  const data = response.data;
+
   return {
-    id: response.data.id,
+    id: data.id,
     type: "勤怠修正",
-    status: response.data.status,
-    userName: response.data.user_name,
-    targetDate: response.data.target_date,
-    clockIn: response.data.clock_in,
-    clockOut: response.data.clock_out,
-    breakTimes: response.data.break_times.map((breakTime) => ({
-      id: breakTime.id,
-      breakIn: breakTime.break_in,
-      breakOut: breakTime.break_out,
-    })),
-    reason: response.data.note,
-    requestedAt: response.data.created_at,
-    updatedAt: response.data.updated_at,
+    status: data.status,
+    userName: data.user_name,
+    targetDate: data.target_date,
+
+    before: {
+      clockIn: data.before.clock_in,
+      clockOut: data.before.clock_out,
+      breakTimes: data.before.break_times.map((breakTime) => ({
+        id: breakTime.id,
+        breakIn: breakTime.break_in,
+        breakOut: breakTime.break_out,
+      })),
+    },
+
+    after: {
+      clockIn: data.after.clock_in,
+      clockOut: data.after.clock_out,
+      breakTimes: data.after.break_times.map((breakTime) => ({
+        id: breakTime.id,
+        breakIn: breakTime.break_in,
+        breakOut: breakTime.break_out,
+      })),
+    },
+
+    reason: data.note,
+    requestedAt: data.created_at,
+    updatedAt: data.updated_at,
   };
 };

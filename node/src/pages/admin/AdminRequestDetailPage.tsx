@@ -2,7 +2,9 @@ import { useParams } from "react-router-dom";
 import type { AdminRequestDetail } from "../../types/adminRequest";
 import { getAdminRequestDetail } from "../../api/admin/adminRequest";
 import { useEffect, useState } from "react";
+import AdminRequestDetailCard from "../../components/admin/requestDetail/AdminRequestDetailCard";
 
+/** 管理者用 申請詳細ページ*/
 export default function AdminRequestDetailPage() {
   const { id } = useParams();
 
@@ -23,20 +25,16 @@ export default function AdminRequestDetailPage() {
   }
 
   return (
-    <div>
-      <h1>申請詳細</h1>
-      <p>申請者：{request.userName}</p>
-      <p>対象日：{request.targetDate}</p>
-      <p>出勤：{request.clockIn}</p>
-      <p>退勤：{request.clockOut}</p>
-      {request.breakTimes.map((breakTime) => (
-        <div key={breakTime.id}>
-          <p>
-            {breakTime.breakIn} ～ {breakTime.breakOut}
-          </p>
-        </div>
-      ))}
-      <p>理由：{request.reason}</p>
-    </div>
+    <main className="mx-auto max-w-7xl px-6 py-10">
+      <div className="mb-12">
+        <p className="text-base font-semibold tracking-wide text-indigo-600">
+          Request Detail
+        </p>
+        <h1 className="mt-1 text-2xl font-bold text-slate-900">
+          {request.userName}さんの申請詳細
+        </h1>
+      </div>
+      <AdminRequestDetailCard request={request} />
+    </main>
   );
 }

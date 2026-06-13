@@ -32,9 +32,8 @@ export type AdminRequestDetail = {
   status: AdminRequestStatus;
   userName: string;
   targetDate: string;
-  clockIn: string | null;
-  clockOut: string | null;
-  breakTimes: AdminRequestBreakTime[];
+  before: AdminRequestTimeDetail;
+  after: AdminRequestTimeDetail;
   reason: string;
   requestedAt: string;
   updatedAt: string;
@@ -47,15 +46,21 @@ export type AdminRequestBreakTime = {
   breakOut: string | null;
 };
 
+// 管理者用の申請詳細時間の型定義;
+export type AdminRequestTimeDetail = {
+  clockIn: string | null;
+  clockOut: string | null;
+  breakTimes: AdminRequestBreakTime[];
+};
+
 // 管理者用の申請詳細レスポンス型
 export type AdminRequestDetailResponse = {
   id: number;
   status: AdminRequestStatus;
   user_name: string;
   target_date: string;
-  clock_in: string | null;
-  clock_out: string | null;
-  break_times: AdminRequestBreakTimeResponse[];
+  before: AdminRequestTimeDetailResponse;
+  after: AdminRequestTimeDetailResponse;
   note: string;
   created_at: string;
   updated_at: string;
@@ -66,4 +71,11 @@ export type AdminRequestBreakTimeResponse = {
   id: number;
   break_in: string | null;
   break_out: string | null;
+};
+
+// 管理者用の申請詳細時間のレスポンス型;
+export type AdminRequestTimeDetailResponse = {
+  clock_in: string | null;
+  clock_out: string | null;
+  break_times: AdminRequestBreakTimeResponse[];
 };
