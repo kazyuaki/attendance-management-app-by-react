@@ -7,11 +7,15 @@ use App\Models\AttendanceEditRequest;
 
 class GetAdminRequestListController extends Controller
 {
+    /**
+     * 管理者用　ユーザー申請一覧を取得
+     */
     public function __invoke()
     {
         $attendanceEditRequests = AttendanceEditRequest::with([
             'user',
-            'attendance'
+            'attendance',
+            'breakTimes'
         ])
             ->latest()
             ->get();

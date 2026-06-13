@@ -6,6 +6,7 @@ import AdminAttendanceDetailPage from "../pages/admin/AdminAttendanceDetailPage"
 import AdminStaffListPage from "../pages/admin/AdminStaffListPage";
 import AdminUserAttendanceListPage from "../pages/admin/AdminUserAttendanceListPage";
 import AdminRequestListPage from "../pages/admin/AdminRequestListPage";
+import AdminRequestDetailPage from "../pages/admin/AdminRequestDetailPage";
 
 export default function AdminRoutes() {
   return (
@@ -26,6 +27,7 @@ export default function AdminRoutes() {
           element={<AdminUserAttendanceListPage />}
         />
         <Route path="/requests" element={<AdminRequestListPage />} />
+        <Route path="/request/:id" element={<AdminRequestDetailPage />} />
       </Route>
     </Routes>
   );

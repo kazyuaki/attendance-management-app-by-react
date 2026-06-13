@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Api\Admin\User;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 
-/**
- * 管理者用のユーザー一覧取得コントローラー
- */
 class GetAdminUserListController extends Controller
 {
+    /**
+     * 管理者用のユーザー　一覧取得
+     */
     public function __invoke()
     {
         $users = User::query()

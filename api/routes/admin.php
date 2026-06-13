@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\Auth\AdminLoginController;
 use App\Http\Controllers\Api\Admin\Attendance\GetAdminAttendanceDetailController;
 use App\Http\Controllers\Api\Admin\Attendance\GetAttendanceListController;
 use App\Http\Controllers\Api\Admin\Attendance\UpdateAdminAttendanceController;
+use App\Http\Controllers\Api\Admin\Request\GetAdminRequestDetailController;
 use App\Http\Controllers\Api\Admin\Request\GetAdminRequestListController;
 use App\Http\Controllers\Api\Admin\User\GetAdminUserAttendanceListController;
 use App\Http\Controllers\Api\Admin\User\GetAdminUserListController;
@@ -53,6 +54,10 @@ Route::prefix('admin')->group(function () {
         // スタッフ月次勤怠一覧取得
         Route::get('/users/{userId}/get-user-attendance-list', GetAdminUserAttendanceListController::class);
 
+        // スタッフ申請一覧取得
         Route::get('/get-admin-request-list', GetAdminRequestListController::class);
+
+        // スタッフ申請詳細取得
+        Route::get('/get-admin-request-detail/{attendanceEditRequest}', GetAdminRequestDetailController::class);
     });
 });

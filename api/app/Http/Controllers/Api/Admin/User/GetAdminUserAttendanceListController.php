@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class GetAdminUserAttendanceListController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * 管理者用　ユーザーの勤怠一覧を取得する
      */
     public function __invoke(int $userId)
     {

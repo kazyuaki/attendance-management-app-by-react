@@ -3,6 +3,7 @@
 import { ArrowUpRight, CheckCircle2, Clock3 } from "lucide-react";
 import { ADMIN_REQUEST_STATUS_LABEL } from "../../../constants/adminRequest";
 import type { AdminRequest } from "../../../types/adminRequest";
+import { Link } from "react-router-dom";
 
 const tableColumns = [
   "状態",
@@ -86,13 +87,13 @@ export function AdminRequestsTable({ requests }: Props) {
                   {request.requestedAt}
                 </td>
                 <td className="px-6 py-4 text-right">
-                  <button
-                    type="button"
+                  <Link
+                    to={`/admin/request/${request.id}`}
                     className="inline-flex items-center gap-1.5 rounded-md bg-indigo-600 px-3 py-2 text-xs font-semibold text-white opacity-0 transition group-hover:opacity-100"
                   >
                     詳細
                     <ArrowUpRight className="h-3.5 w-3.5" />
-                  </button>
+                  </Link>
                 </td>
               </tr>
             );
