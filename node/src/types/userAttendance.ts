@@ -57,3 +57,32 @@ export type StoreAttendanceEditRequestPayload = {
   note: string;
   break_times: AttendanceEditRequestBreakTime[];
 };
+
+// ユーザー勤怠修正申請のステータス型定義
+export type UserAttendanceEditRequestStatus = "pending" | "approved";
+
+// ユーザー勤怠修正申請一覧の型定義
+export type UserAttendanceEditRequest = {
+  id: number;
+  attendanceId: number;
+  status: UserAttendanceEditRequestStatus;
+  targetDate: string;
+  clockIn: string;
+  clockOut: string;
+  note: string;
+  requestedAt: string;
+  updatedAt: string;
+};
+
+// ユーザー勤怠修正申請一覧のレスポンス型定義
+export type UserAttendanceEditRequestResponse = {
+  id: number;
+  attendance_id: number;
+  status: UserAttendanceEditRequestStatus;
+  target_date: string;
+  clock_in: string;
+  clock_out: string;
+  note: string;
+  created_at: string;
+  updated_at: string;
+};

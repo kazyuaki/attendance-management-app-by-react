@@ -7,6 +7,7 @@ import EmailVerifyPage from "../pages/user/EmailVerifyPage";
 import UserLoginPage from "../pages/user/UserLoginPage";
 import UserGuestLayout from "../components/layouts/UserGuestLayout";
 import UserAttendanceDetailPage from "../pages/user/UserAttendanceDetailPage";
+import UserRequestListPage from "../pages/user/UserRequestListPage";
 
 export default function UserRoutes() {
   return (
@@ -23,6 +24,7 @@ export default function UserRoutes() {
         <Route path="/attendance" element={<UserAttendanceClockPage />} />
         <Route path="/attendances" element={<UserAttendanceListPage />} />
         <Route path="/attendance/:id" element={<UserAttendanceDetailPage />} />
+        <Route path="/request" element={<UserRequestListPage />} />
       </Route>
     </Routes>
   );
