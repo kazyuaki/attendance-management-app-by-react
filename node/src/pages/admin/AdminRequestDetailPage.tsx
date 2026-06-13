@@ -1,14 +1,17 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import type { AdminRequestDetail } from "../../types/adminRequest";
-import { getAdminRequestDetail } from "../../api/admin/adminRequest";
+import { approveAdminRequest, getAdminRequestDetail } from "../../api/admin/adminRequest";
 import { useEffect, useState } from "react";
 import AdminRequestDetailCard from "../../components/admin/requestDetail/AdminRequestDetailCard";
+import toast from "react-hot-toast";
 
 /** 管理者用 申請詳細ページ*/
 export default function AdminRequestDetailPage() {
   const { id } = useParams();
 
   const [request, setRequest] = useState<AdminRequestDetail | null>(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRequest = async () => {
@@ -19,6 +22,21 @@ export default function AdminRequestDetailPage() {
     };
     fetchRequest();
   }, [id]);
+
+  // 承認処理
+  const handleApprove = async () => {
+    try {
+      if (!request) return
+      await approveAdminRequest(request.id);
+
+      toast.success("申請を承認しました。");
+      navigate("/admin/requests");
+    } catch (error) {
+      console.error("申請承認に失敗しました", error);
+
+      toast.error("申請承認に失敗しました。");
+    }
+  };
 
   if (!request) {
     return <div>読み込み中...</div>;
@@ -34,7 +52,10 @@ export default function AdminRequestDetailPage() {
           {request.userName}さんの申請詳細
         </h1>
       </div>
-      <AdminRequestDetailCard request={request} />
+      <AdminRequestDetailCard
+        request={request}
+        onApprove={handleApprove}
+      />
     </main>
   );
 }

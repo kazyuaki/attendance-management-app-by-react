@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\Auth\AdminLoginController;
 use App\Http\Controllers\Api\Admin\Attendance\GetAdminAttendanceDetailController;
 use App\Http\Controllers\Api\Admin\Attendance\GetAttendanceListController;
 use App\Http\Controllers\Api\Admin\Attendance\UpdateAdminAttendanceController;
+use App\Http\Controllers\Api\Admin\Request\ApproveAttendanceEditRequestController;
 use App\Http\Controllers\Api\Admin\Request\GetAdminRequestDetailController;
 use App\Http\Controllers\Api\Admin\Request\GetAdminRequestListController;
 use App\Http\Controllers\Api\Admin\User\GetAdminUserAttendanceListController;
@@ -59,5 +60,8 @@ Route::prefix('admin')->group(function () {
 
         // スタッフ申請詳細取得
         Route::get('/get-admin-request-detail/{attendanceEditRequest}', GetAdminRequestDetailController::class);
+
+        // スタッフ申請承認
+        Route::post('/requests/{attendanceEditRequest}/approve', ApproveAttendanceEditRequestController::class);
     });
 });
