@@ -66,3 +66,10 @@ export const getAdminRequestDetail = async (
     updatedAt: data.updated_at,
   };
 };
+
+/** 申請承認API */
+export const approveAdminRequest = async (requestId: number) => {
+  const response = await adminApi.post(`/requests/${requestId}/approve`);
+
+  return response.data;
+};

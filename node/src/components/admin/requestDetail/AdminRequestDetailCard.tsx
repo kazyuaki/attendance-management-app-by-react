@@ -6,11 +6,12 @@ import AdminRequestTimeRow from "./AdminRequestTimeRow";
 
 type Props = {
   request: AdminRequestDetail;
+  onApprove: () => void;
 };
 
 /** 管理者用 申請詳細カード */
-export default function AdminRequestDetailCard({ request }: Props) {
-  
+export default function AdminRequestDetailCard({ request, onApprove }: Props) {
+  const isApproved = request.status === "approved";
 
   return (
     <div className="space-y-6">
@@ -69,13 +70,25 @@ export default function AdminRequestDetailCard({ request }: Props) {
         </div>
 
         {/* ボタン */}
-        <div className="flex justify-end gap-4 border-t border-gray-100 px-8 py-5">
-          <button className="rounded-lg border border-red-300 px-5 py-2 text-lg font-semibold text-red-600 shadow-sm transition hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 active:scale-95">
-            差し戻し
-          </button>
-          <button className="rounded-lg bg-blue-600 px-5 py-2 text-lg font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95">
-            承認
-          </button>
+        <div className="border-t border-gray-100 px-8 py-5">
+          {isApproved ? (
+            <p className="rounded-lg bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 ring-1 ring-emerald-100">
+              {" "}
+              この申請は承認済みです。再度承認または差し戻しはできません。
+            </p>
+          ) : (
+            <div className="flex justify-end gap-4 border-gray-100">
+              <button className="rounded-lg border border-red-300 px-5 py-2 text-lg font-semibold text-red-600 shadow-sm transition hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 active:scale-95">
+                差し戻し
+              </button>
+              <button
+                onClick={onApprove}
+                className="rounded-lg bg-blue-600 px-5 py-2 text-lg font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95"
+              >
+                承認
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
