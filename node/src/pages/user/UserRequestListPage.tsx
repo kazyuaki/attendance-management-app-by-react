@@ -9,11 +9,13 @@ import type {
 const STATUS_LABEL: Record<UserAttendanceEditRequestStatus, string> = {
   pending: "承認待ち",
   approved: "承認済み",
+  rejected: "差し戻し",
 };
 
 const STATUS_CLASS: Record<UserAttendanceEditRequestStatus, string> = {
   pending: "bg-amber-50 text-amber-700 ring-amber-200",
   approved: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+  rejected: "bg-rose-50 text-rose-700 ring-rose-200",
 };
 
 const COLUMNS = ["対象日", "申請時間", "理由", "申請日時", "状態", "詳細"];

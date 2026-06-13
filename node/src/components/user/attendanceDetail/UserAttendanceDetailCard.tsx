@@ -162,9 +162,19 @@ export default function UserAttendanceDetailCard({ attendance }: Props) {
     !clockIn ||
     !clockOut ||
     breakTimes.some((breakTime) => !breakTime.break_in);
+  const rejectedReason = attendance.rejected_reason;
 
   return (
     <div className="space-y-6">
+      {rejectedReason && (
+        <div className="rounded-xl border border-rose-200 bg-rose-50 px-6 py-4 text-rose-800">
+          <p className="text-sm font-bold">差し戻し理由</p>
+          <p className="mt-2 whitespace-pre-wrap text-sm leading-6">
+            {rejectedReason}
+          </p>
+        </div>
+      )}
+
       <div className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-200">
         {/* セクションヘッダー */}
         <div className="border-b border-gray-100 bg-gray-50/60 px-8 py-4">

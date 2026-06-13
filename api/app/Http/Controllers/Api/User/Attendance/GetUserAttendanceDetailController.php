@@ -21,6 +21,10 @@ class GetUserAttendanceDetailController extends Controller
 
         $attendance->load('breakTimes');
 
+        $latestAttendanceEditRequest = AttendanceEditRequest::where('attendance_id', $attendance->id)
+            ->latest()
+            ->first();
+
         $isAttendanceEditRequested = AttendanceEditRequest::where('attendance_id', $attendance->id)
             ->whereIn('status', ['pending', 'approved'])
             ->exists();
@@ -45,6 +49,9 @@ class GetUserAttendanceDetailController extends Controller
                     ];
                 }),
                 'is_attendance_edit_requested' => $isAttendanceEditRequested,
+                'rejected_reason' => $latestAttendanceEditRequest?->status === 'rejected'
+                    ? $latestAttendanceEditRequest->rejected_reason
+                    : null,
             ],
         ]);
     }
