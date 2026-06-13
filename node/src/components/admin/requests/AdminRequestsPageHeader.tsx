@@ -1,15 +1,17 @@
-import { CheckCircle2, Clock3 } from "lucide-react";
+import { CheckCircle2, Clock3, Undo2 } from "lucide-react";
 import { ADMIN_REQUEST_STATUS_LABEL } from "../../../constants/adminRequest";
 import { AdminRequestsSummaryCard } from "./AdminRequestsSummaryCard";
 
 type Props = {
   pendingCount: number;
   approvedCount: number;
+  rejectedCount: number;
 };
 
 export function AdminRequestsPageHeader({
   pendingCount,
   approvedCount,
+  rejectedCount,
 }: Props) {
   return (
     <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -20,7 +22,7 @@ export function AdminRequestsPageHeader({
         <h1 className="mt-2 text-3xl font-bold text-slate-950">申請一覧</h1>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:w-[360px]">
+      <div className="grid grid-cols-3 gap-3 sm:w-[540px]">
         <AdminRequestsSummaryCard
           label={ADMIN_REQUEST_STATUS_LABEL.pending}
           count={pendingCount}
@@ -32,6 +34,12 @@ export function AdminRequestsPageHeader({
           count={approvedCount}
           icon={CheckCircle2}
           iconClassName="text-emerald-700"
+        />
+        <AdminRequestsSummaryCard
+          label={ADMIN_REQUEST_STATUS_LABEL.rejected}
+          count={rejectedCount}
+          icon={Undo2}
+          iconClassName="text-rose-700"
         />
       </div>
     </div>

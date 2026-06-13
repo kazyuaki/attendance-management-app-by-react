@@ -1,6 +1,6 @@
 // src/types/adminRequest.ts
 
-export type AdminRequestStatus = "pending" | "approved";
+export type AdminRequestStatus = "pending" | "approved" | "rejected";
 
 // 管理者用の申請の型定義
 export type AdminRequest = {
@@ -35,6 +35,7 @@ export type AdminRequestDetail = {
   before: AdminRequestTimeDetail;
   after: AdminRequestTimeDetail;
   reason: string;
+  rejectedReason: string | null;
   requestedAt: string;
   updatedAt: string;
 };
@@ -62,6 +63,7 @@ export type AdminRequestDetailResponse = {
   before: AdminRequestTimeDetailResponse;
   after: AdminRequestTimeDetailResponse;
   note: string;
+  rejected_reason: string | null;
   created_at: string;
   updated_at: string;
 };

@@ -1,8 +1,8 @@
 // src/components/admin/requests/AdminRequestsTable.tsx
 
-import { ArrowUpRight, CheckCircle2, Clock3 } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, Clock3, Undo2 } from "lucide-react";
 import { ADMIN_REQUEST_STATUS_LABEL } from "../../../constants/adminRequest";
-import type { AdminRequest } from "../../../types/adminRequest";
+import type { AdminRequest, AdminRequestStatus } from "../../../types/adminRequest";
 import { Link } from "react-router-dom";
 
 const tableColumns = [
@@ -18,6 +18,18 @@ const tableColumns = [
 type Props = {
   requests: AdminRequest[];
 };
+
+const STATUS_BADGE_CLASS: Record<AdminRequestStatus, string> = {
+  pending: "bg-amber-50 text-amber-700 ring-1 ring-amber-100",
+  approved: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100",
+  rejected: "bg-rose-50 text-rose-700 ring-1 ring-rose-100",
+};
+
+const STATUS_ICON = {
+  pending: Clock3,
+  approved: CheckCircle2,
+  rejected: Undo2,
+} satisfies Record<AdminRequestStatus, typeof Clock3>;
 
 /**
  * 申請の一覧を表示するテーブルコンポーネント
@@ -43,7 +55,7 @@ export function AdminRequestsTable({ requests }: Props) {
 
         <tbody className="divide-y divide-slate-50">
           {requests.map((request) => {
-            const isPending = request.status === "pending";
+            const StatusIcon = STATUS_ICON[request.status];
 
             return (
               <tr
@@ -52,17 +64,9 @@ export function AdminRequestsTable({ requests }: Props) {
               >
                 <td className="px-6 py-4">
                   <span
-                    className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
-                      isPending
-                        ? "bg-amber-50 text-amber-700 ring-1 ring-amber-100"
-                        : "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100"
-                    }`}
+                    className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${STATUS_BADGE_CLASS[request.status]}`}
                   >
-                    {isPending ? (
-                      <Clock3 className="h-3.5 w-3.5" />
-                    ) : (
-                      <CheckCircle2 className="h-3.5 w-3.5" />
-                    )}
+                    <StatusIcon className="h-3.5 w-3.5" />
                     {ADMIN_REQUEST_STATUS_LABEL[request.status]}
                   </span>
                 </td>

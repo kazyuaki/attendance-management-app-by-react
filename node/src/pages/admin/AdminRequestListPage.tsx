@@ -35,6 +35,9 @@ export default function AdminRequestListPage() {
   const approvedCount = requests.filter(
     (request) => request.status === "approved",
   ).length;
+  const rejectedCount = requests.filter(
+    (request) => request.status === "rejected",
+  ).length;
 
   // タブと検索キーワードに基づいて申請をフィルタリング
   const filteredRequests = useMemo(() => {
@@ -58,6 +61,7 @@ export default function AdminRequestListPage() {
         <AdminRequestsPageHeader
           pendingCount={pendingCount}
           approvedCount={approvedCount}
+          rejectedCount={rejectedCount}
         />
 
         <div className="mt-8 rounded-2xl bg-white shadow-sm ring-1 ring-slate-100">

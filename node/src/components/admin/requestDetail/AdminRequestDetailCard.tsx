@@ -1,17 +1,45 @@
 // src/components/admin/requestDetail/AdminRequestDetailCard.tsx
 
+import { useState } from "react";
 import type { AdminRequestDetail } from "../../../types/adminRequest";
 import AdminRequestBreakRow from "./AdminRequestBreakRow";
 import AdminRequestTimeRow from "./AdminRequestTimeRow";
+import AdminRequestRemandDialog from "./AdminRequestRemandDialog";
 
 type Props = {
   request: AdminRequestDetail;
   onApprove: () => void;
+  onRemand: (rejectedReason: string) => void;
 };
 
 /** 管理者用 申請詳細カード */
-export default function AdminRequestDetailCard({ request, onApprove }: Props) {
-  const isApproved = request.status === "approved";
+export default function AdminRequestDetailCard({
+  request,
+  onApprove,
+  onRemand,
+}: Props) {
+  const [isRemandDialogOpen, setIsRemandDialogOpen] = useState(false);
+  const [rejectedReason, setRejectedReason] = useState("");
+  const isProcessed = request.status !== "pending";
+  const processedMessage =
+    request.status === "approved"
+      ? "この申請は承認済みです。再度承認または差し戻しはできません。"
+      : "この申請は差し戻し済みです。再度承認または差し戻しはできません。";
+  
+  const handleCloseRemandDialog = () => {
+    setIsRemandDialogOpen(false);
+    setRejectedReason("");
+  };
+
+  const handleSubmitRemand = () => {
+    const trimmedReason = rejectedReason.trim();
+
+    if (!trimmedReason) return;
+
+    onRemand(trimmedReason);
+    setIsRemandDialogOpen(false);
+    setRejectedReason("");
+  };
 
   return (
     <div className="space-y-6">
@@ -71,14 +99,16 @@ export default function AdminRequestDetailCard({ request, onApprove }: Props) {
 
         {/* ボタン */}
         <div className="border-t border-gray-100 px-8 py-5">
-          {isApproved ? (
+          {isProcessed ? (
             <p className="rounded-lg bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 ring-1 ring-emerald-100">
-              {" "}
-              この申請は承認済みです。再度承認または差し戻しはできません。
+              {processedMessage}
             </p>
           ) : (
             <div className="flex justify-end gap-4 border-gray-100">
-              <button className="rounded-lg border border-red-300 px-5 py-2 text-lg font-semibold text-red-600 shadow-sm transition hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 active:scale-95">
+              <button
+                onClick={() => setIsRemandDialogOpen(true)}
+                className="rounded-lg border border-red-300 px-5 py-2 text-lg font-semibold text-red-600 shadow-sm transition hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 active:scale-95"
+              >
                 差し戻し
               </button>
               <button
@@ -91,6 +121,14 @@ export default function AdminRequestDetailCard({ request, onApprove }: Props) {
           )}
         </div>
       </div>
+      {isRemandDialogOpen && (
+        <AdminRequestRemandDialog
+          rejectedReason={rejectedReason}
+          onChangeRejectedReason={setRejectedReason}
+          onClose={handleCloseRemandDialog}
+          onSubmit={handleSubmitRemand}
+        />
+      )}
     </div>
   );
 }
