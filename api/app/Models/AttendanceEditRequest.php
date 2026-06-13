@@ -15,6 +15,7 @@ class AttendanceEditRequest extends Model
         'clock_out',
         'note',
         'status',
+        'rejected_reason',
     ];
 
     public function attendance(): BelongsTo

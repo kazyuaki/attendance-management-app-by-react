@@ -1,6 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom";
 import type { AdminRequestDetail } from "../../types/adminRequest";
-import { approveAdminRequest, getAdminRequestDetail } from "../../api/admin/adminRequest";
+import {
+  approveAdminRequest,
+  getAdminRequestDetail,
+  remandAdminRequest,
+} from "../../api/admin/adminRequest";
 import { useEffect, useState } from "react";
 import AdminRequestDetailCard from "../../components/admin/requestDetail/AdminRequestDetailCard";
 import toast from "react-hot-toast";
@@ -26,15 +30,30 @@ export default function AdminRequestDetailPage() {
   // 承認処理
   const handleApprove = async () => {
     try {
-      if (!request) return
+      if (!request) return;
       await approveAdminRequest(request.id);
 
       toast.success("申請を承認しました。");
       navigate("/admin/requests");
     } catch (error) {
-      console.error("申請承認に失敗しました", error);
+      console.error("申請承認に失敗しました:", error);
 
       toast.error("申請承認に失敗しました。");
+    }
+  };
+
+  const handleRemand = async (rejectedReason: string) => {
+    if (!request || !rejectedReason.trim()) return;
+
+    try {
+
+      await remandAdminRequest(request.id, rejectedReason);
+
+      toast.success("申請を差し戻しました。");
+      navigate("/admin/requests");
+    } catch (error) {
+      console.error("申請の差し戻しに失敗しました:", error);
+      toast.error("申請の差し戻しに失敗しました。");
     }
   };
 
@@ -55,6 +74,7 @@ export default function AdminRequestDetailPage() {
       <AdminRequestDetailCard
         request={request}
         onApprove={handleApprove}
+        onRemand={handleRemand}
       />
     </main>
   );

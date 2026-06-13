@@ -62,6 +62,7 @@ export const getAdminRequestDetail = async (
     },
 
     reason: data.note,
+    rejectedReason: data.rejected_reason,
     requestedAt: data.created_at,
     updatedAt: data.updated_at,
   };
@@ -72,4 +73,14 @@ export const approveAdminRequest = async (requestId: number) => {
   const response = await adminApi.post(`/requests/${requestId}/approve`);
 
   return response.data;
+};
+
+/** 申請差し戻しAPI */
+export const remandAdminRequest = async (
+  requestId: number,
+  rejectedReason: string,
+) => {
+  await adminApi.post(`/requests/${requestId}/remand`, {
+    rejected_reason: rejectedReason,
+  });
 };
