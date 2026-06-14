@@ -81,7 +81,7 @@ export default function AdminLoginForm() {
       <AdminInputField
         label="メールアドレス"
         type="email"
-        placeholder="admin@example.com"
+        placeholder="adminA@attendance.com"
         autoComplete="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
@@ -98,7 +98,7 @@ export default function AdminLoginForm() {
         <AdminInputField
           label="パスワード"
           type={showPassword ? "text" : "password"}
-          placeholder="password"
+          placeholder="PasswordA123"
           autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
