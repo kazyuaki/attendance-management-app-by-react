@@ -159,8 +159,8 @@ docker compose exec php php artisan migrate --seed
 
 | 名前    | メールアドレス     | パスワード |
 | ------- | ------------------ | ---------- |
-| 管理者A | adminA@example.com | passwordA1 |
-| 管理者B | adminB@example.com | passwordB1 |
+| 管理者A | adminA@attendance.com | PasswordA123 |
+| 管理者B | adminB@attendance.com | PasswordB123 |
 
 ## よく使うコマンド
 
