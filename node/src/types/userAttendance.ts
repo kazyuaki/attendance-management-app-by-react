@@ -37,6 +37,8 @@ export type UserAttendanceDetail = {
   note: string;
   break_times: UserAttendanceDetailBreakTime[];
   is_attendance_edit_requested: boolean;
+  attendance_edit_request_id: number | null;
+  is_attendance_edit_request_cancelable: boolean;
   rejected_reason: string | null;
 };
 
@@ -60,7 +62,11 @@ export type StoreAttendanceEditRequestPayload = {
 };
 
 // ユーザー勤怠修正申請のステータス型定義
-export type UserAttendanceEditRequestStatus = "pending" | "approved" | "rejected";
+export type UserAttendanceEditRequestStatus =
+  | "pending"
+  | "approved"
+  | "rejected"
+  | "cancelled";
 
 // ユーザー勤怠修正申請一覧の型定義
 export type UserAttendanceEditRequest = {

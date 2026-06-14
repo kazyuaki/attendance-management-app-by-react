@@ -4,9 +4,13 @@ import UserAttendanceTimeRow from "./UserAttendanceTimeRow";
 import UserAttendanceBreakRow from "./UserAttendanceBreakRow";
 import type { UserAttendanceDetail } from "../../../types/userAttendance";
 import { useState } from "react";
-import { storeAttendanceEditRequest } from "../../../api/user/attendance";
+import {
+  cancelAttendanceEditRequest,
+  storeAttendanceEditRequest,
+} from "../../../api/user/attendance";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import UserAttendanceCancelDialog from "./UserAttendanceCancelDialog";
 
 type Props = {
   attendance: UserAttendanceDetail;
@@ -34,6 +38,8 @@ export default function UserAttendanceDetailCard({ attendance }: Props) {
     })),
   );
   const [errors, setErrors] = useState<ValidationErrors>({});
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+
   const navigate = useNavigate();
   const isRejected = !!attendance.rejected_reason;
   const isFormDisabled = attendance.is_attendance_edit_requested && !isRejected;
@@ -162,6 +168,30 @@ export default function UserAttendanceDetailCard({ attendance }: Props) {
     );
   };
 
+  // 申請キャンセル
+  const handleCancelRequest = async () => {
+    if (!attendance.attendance_edit_request_id) return;
+
+    try {
+      await cancelAttendanceEditRequest(attendance.attendance_edit_request_id);
+
+      toast.success("申請を取り下げました。");
+      navigate("/requests");
+    } catch (error) {
+      console.error("申請取り下げに失敗しました:", error);
+
+      if (axios.isAxiosError(error) && error.response?.status === 409) {
+        toast.error(
+          error.response.data.message ??
+            "承認待ちの申請のみ取り下げできます。",
+        );
+        return;
+      }
+
+      toast.error("申請取り下げに失敗しました。");
+    }
+  };
+
   /* 入力必須エラーの有無を判定 */
   const hasRequiredInputError =
     !clockIn ||
@@ -284,18 +314,33 @@ export default function UserAttendanceDetailCard({ attendance }: Props) {
 
       {/* ボタン */}
       <div className="flex flex-col items-end gap-3">
-        <button
-          onClick={handleSubmit}
-          disabled={hasRequiredInputError || isFormDisabled}
-          className="rounded-lg bg-emerald-600 px-5 py-2.5 text-lg font-semibold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400"
-        >
-          {isRejected ? "再申請" : "修正申請"}
-        </button>
+        <div className="flex gap-8">
+          {attendance.is_attendance_edit_request_cancelable && (
+            <button
+              onClick={() => setIsCancelDialogOpen(true)}
+              className="rounded-lg border border-red-300 px-5 py-2.5 text-lg font-semibold text-red-600 transition hover:bg-red-50"
+            >
+              申請を取り下げる
+            </button>
+          )}
+          <button
+            onClick={handleSubmit}
+            disabled={hasRequiredInputError || isFormDisabled}
+            className="rounded-lg bg-emerald-600 px-5 py-2.5 text-lg font-semibold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400"
+          >
+            {isRejected ? "再申請" : "修正申請"}
+          </button>
+        </div>
         {isFormDisabled && (
           <p className="text-sm font-semibold text-red-500">
             承認申請済みのため修正できません
           </p>
         )}
+        <UserAttendanceCancelDialog
+          open={isCancelDialogOpen}
+          onClose={() => setIsCancelDialogOpen(false)}
+          onConfirm={handleCancelRequest}
+        />
       </div>
     </div>
   );

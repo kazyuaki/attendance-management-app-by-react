@@ -1,6 +1,6 @@
 // src/components/admin/requests/AdminRequestsTable.tsx
 
-import { ArrowUpRight, CheckCircle2, Clock3, Undo2 } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, Clock3, Undo2, XCircle } from "lucide-react";
 import { ADMIN_REQUEST_STATUS_LABEL } from "../../../constants/adminRequest";
 import type { AdminRequest, AdminRequestStatus } from "../../../types/adminRequest";
 import { Link } from "react-router-dom";
@@ -23,12 +23,14 @@ const STATUS_BADGE_CLASS: Record<AdminRequestStatus, string> = {
   pending: "bg-amber-50 text-amber-700 ring-1 ring-amber-100",
   approved: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100",
   rejected: "bg-rose-50 text-rose-700 ring-1 ring-rose-100",
+  cancelled: "bg-slate-100 text-slate-600 ring-1 ring-slate-200",
 };
 
 const STATUS_ICON = {
   pending: Clock3,
   approved: CheckCircle2,
   rejected: Undo2,
+  cancelled: XCircle,
 } satisfies Record<AdminRequestStatus, typeof Clock3>;
 
 /**

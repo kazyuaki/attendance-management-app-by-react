@@ -81,7 +81,7 @@ export default function UserHeader() {
                 </Link>
               </li>
               <li>
-                <Link to="/request" className={navLinkClass("/request")}>
+                <Link to="/requests" className={navLinkClass("/requests")}>
                   申請
                 </Link>
               </li>

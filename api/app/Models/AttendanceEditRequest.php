@@ -8,13 +8,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AttendanceEditRequest extends Model
 {
+    /**
+     * pending: 承認待ち
+     * approved: 承認済み
+     * rejected: 差し戻し
+     * cancelled: 取り下げ
+     */
     protected $fillable = [
         'attendance_id',
         'user_id',
         'clock_in',
         'clock_out',
         'note',
-        'status',
+        'status', 
         'rejected_reason',
     ];
 

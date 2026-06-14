@@ -18,7 +18,7 @@ return new class extends Migration
             $table->time('clock_in');
             $table->time('clock_out');
             $table->text('note');
-            $table->string('status')->default('pending'); //pending, approved, rejected
+            $table->string('status')->default('pending'); //pending, approved, rejected, cancelled
             $table->timestamps();
         });
     }

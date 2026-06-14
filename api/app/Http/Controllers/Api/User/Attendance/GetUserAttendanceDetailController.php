@@ -26,8 +26,14 @@ class GetUserAttendanceDetailController extends Controller
             ->where('user_id', $request->user()->id)
             ->latest()
             ->first();
+        $pendingAttendanceEditRequest = AttendanceEditRequest::where('attendance_id', $attendance->id)
+            ->where('user_id', $request->user()->id)
+            ->where('status', 'pending')
+            ->latest()
+            ->first();
 
         $isRejected = $latestAttendanceEditRequest?->status === 'rejected';
+        $isCancelable = $pendingAttendanceEditRequest !== null;
         $displayBreakTimes = $isRejected
             ? $latestAttendanceEditRequest->breakTimes
             : $attendance->breakTimes;
@@ -65,6 +71,8 @@ class GetUserAttendanceDetailController extends Controller
                     ];
                 }),
                 'is_attendance_edit_requested' => $isAttendanceEditRequested,
+                'attendance_edit_request_id' => $pendingAttendanceEditRequest?->id,
+                'is_attendance_edit_request_cancelable' => $isCancelable,
                 'rejected_reason' => $isRejected
                     ? $latestAttendanceEditRequest->rejected_reason
                     : null,

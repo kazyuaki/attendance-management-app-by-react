@@ -1,6 +1,10 @@
 // src/types/adminRequest.ts
 
-export type AdminRequestStatus = "pending" | "approved" | "rejected";
+export type AdminRequestStatus =
+  | "pending"
+  | "approved"
+  | "rejected"
+  | "cancelled";
 
 // 管理者用の申請の型定義
 export type AdminRequest = {

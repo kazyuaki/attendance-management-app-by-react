@@ -121,6 +121,21 @@ export const storeAttendanceEditRequest = async(
 }
 
 /**
+ * 勤怠修正申請取り下げAPI
+ * 
+ * @param attendanceEditRequestId 
+ * @returns 
+ */
+export const cancelAttendanceEditRequest = async(
+  attendanceEditRequestId: number
+) => {
+  const response = await userAttendanceApi.post(
+    `edit-requests/${attendanceEditRequestId}/cancel`,
+  );
+  return response.data;
+}
+
+/**
  * 勤怠修正申請一覧取得API
  * @returns
  */
