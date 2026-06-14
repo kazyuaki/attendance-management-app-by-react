@@ -4,6 +4,7 @@ export const ADMIN_REQUEST_STATUS_LABEL: Record<AdminRequestStatus, string> = {
   pending: "承認待ち",
   approved: "承認済み",
   rejected: "差し戻し",
+  cancelled: "取り下げ",
 };
 
 export const ADMIN_REQUEST_STATUS_TABS = [

@@ -99,4 +99,21 @@ class AttendanceEditRequestService
             ]);
         }
     }
+
+    public function cancel(
+        AttendanceEditRequest $attendanceEditRequest,
+        User $user,
+    ): void {
+        if ($attendanceEditRequest->user_id !== $user->id) {
+            abort(403);
+        }
+
+        if ($attendanceEditRequest->status !== 'pending') {
+            throw new ConflictHttpException('承認待ちの申請のみ取り下げできます。');
+        }
+
+        $attendanceEditRequest->update([
+            'status' => 'cancelled'
+        ]);
+    }
 }

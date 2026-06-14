@@ -24,7 +24,7 @@ export default function UserRoutes() {
         <Route path="/attendance" element={<UserAttendanceClockPage />} />
         <Route path="/attendances" element={<UserAttendanceListPage />} />
         <Route path="/attendance/:id" element={<UserAttendanceDetailPage />} />
-        <Route path="/request" element={<UserRequestListPage />} />
+        <Route path="/requests" element={<UserRequestListPage />} />
       </Route>
     </Routes>
   );

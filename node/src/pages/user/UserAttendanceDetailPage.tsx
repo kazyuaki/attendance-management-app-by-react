@@ -59,6 +59,7 @@ export default function UserAttendanceDetailPage() {
       </div>
 
       <UserAttendanceDetailCard attendance={attendance} />
+
     </main>
   );
 }
