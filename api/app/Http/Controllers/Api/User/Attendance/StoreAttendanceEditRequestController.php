@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\StoreAttendanceEditRequestRequest;
 use App\Models\Attendance;
 use App\Models\AttendanceEditRequest;
+use App\Services\User\Attendance\AttendanceEditRequestService;
 use Illuminate\Http\JsonResponse;
 
 class StoreAttendanceEditRequestController extends Controller
@@ -15,37 +16,18 @@ class StoreAttendanceEditRequestController extends Controller
      */
     public function __invoke(
         StoreAttendanceEditRequestRequest $request,
-        Attendance $attendance
+        Attendance $attendance,
+        AttendanceEditRequestService $attendanceEditRequestService,
     ): JsonResponse {
         if ($attendance->user_id !== $request->user()->id) {
             abort(403);
         }
 
-        $attendanceEditRequest = AttendanceEditRequest::create([
-            'attendance_id' => $attendance->id,
-            'user_id' => $request->user()->id,
-            'clock_in' => $request->clock_in,
-            'clock_out' => $request->clock_out,
-            'note' => $request->note,
-            'status' => 'pending',
-        ]);
-
-        foreach ($request->input('break_times', []) as $breakTime) {
-            $attendanceEditRequest->breakTimes()->create([
-                'break_in' => $breakTime['break_in'],
-                'break_out' => $breakTime['break_out'] ?? null,
-            ]);
-        }
-
-        $existsPendingRequest = AttendanceEditRequest::where('attendance_id', $attendance->id)
-            ->where('status', 'pending')
-            ->exists();
-
-        if ($existsPendingRequest) {
-            return response()->json([
-                'message' => '承認待ちの申請があるため、修正できません。'
-            ], 409);
-        }
+        $attendanceEditRequestService->store(
+            $attendance,
+            $request->user(),
+            $request->validated(),
+        );
 
         return response()->json([
             'message' => '勤怠修正申請を送信しました。',

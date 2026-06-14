@@ -21,9 +21,25 @@ class GetUserAttendanceDetailController extends Controller
 
         $attendance->load('breakTimes');
 
-        $latestAttendanceEditRequest = AttendanceEditRequest::where('attendance_id', $attendance->id)
+        $latestAttendanceEditRequest = AttendanceEditRequest::with('breakTimes')
+            ->where('attendance_id', $attendance->id)
+            ->where('user_id', $request->user()->id)
             ->latest()
             ->first();
+
+        $isRejected = $latestAttendanceEditRequest?->status === 'rejected';
+        $displayBreakTimes = $isRejected
+            ? $latestAttendanceEditRequest->breakTimes
+            : $attendance->breakTimes;
+        $displayClockIn = $isRejected
+            ? $latestAttendanceEditRequest->clock_in
+            : $attendance->clock_in;
+        $displayClockOut = $isRejected
+            ? $latestAttendanceEditRequest->clock_out
+            : $attendance->clock_out;
+        $displayNote = $isRejected
+            ? $latestAttendanceEditRequest->note
+            : $attendance->note;
 
         $isAttendanceEditRequested = AttendanceEditRequest::where('attendance_id', $attendance->id)
             ->whereIn('status', ['pending', 'approved'])
@@ -34,12 +50,12 @@ class GetUserAttendanceDetailController extends Controller
                 'id' => $attendance->id,
                 'user_name' => $request->user()->name,
                 'work_date' => Carbon::parse($attendance->work_date)->format('Y年n月j日'),
-                'clock_in' => Carbon::parse($attendance->clock_in)->format('H:i'),
-                'clock_out' => $attendance->clock_out
-                    ? Carbon::parse($attendance->clock_out)->format('H:i')
+                'clock_in' => Carbon::parse($displayClockIn)->format('H:i'),
+                'clock_out' => $displayClockOut
+                    ? Carbon::parse($displayClockOut)->format('H:i')
                     : null,
-                'note' => $attendance->note,
-                'break_times' => $attendance->breakTimes->map(function ($breakTime) {
+                'note' => $displayNote,
+                'break_times' => $displayBreakTimes->map(function ($breakTime) {
                     return [
                         'id' => $breakTime->id,
                         'break_in' => Carbon::parse($breakTime->break_in)->format('H:i'),
@@ -49,7 +65,7 @@ class GetUserAttendanceDetailController extends Controller
                     ];
                 }),
                 'is_attendance_edit_requested' => $isAttendanceEditRequested,
-                'rejected_reason' => $latestAttendanceEditRequest?->status === 'rejected'
+                'rejected_reason' => $isRejected
                     ? $latestAttendanceEditRequest->rejected_reason
                     : null,
             ],
