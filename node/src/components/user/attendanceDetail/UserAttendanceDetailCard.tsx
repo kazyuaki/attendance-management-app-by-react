@@ -35,7 +35,8 @@ export default function UserAttendanceDetailCard({ attendance }: Props) {
   );
   const [errors, setErrors] = useState<ValidationErrors>({});
   const navigate = useNavigate();
-  const isFormDisabled = attendance.is_attendance_edit_requested;
+  const isRejected = !!attendance.rejected_reason;
+  const isFormDisabled = attendance.is_attendance_edit_requested && !isRejected;
 
   const validate = (): ValidationErrors => {
     const errors: ValidationErrors = {};
@@ -129,15 +130,19 @@ export default function UserAttendanceDetailCard({ attendance }: Props) {
         note,
         break_times: breakTimes,
       });
-      toast.success("修正申請を送信しました。");
+      toast.success(
+        isRejected ? "修正申請を再送信しました。" : "修正申請を送信しました。",
+      );
       navigate("/attendances");
     } catch (error) {
       console.error("修正申請に失敗しました:", error);
 
       if (axios.isAxiosError(error) && error.response?.status === 409) {
         toast.error(
-          error.response.data.message ?? "承認待ちの申請があるため、修正できません。"
-        )
+          error.response.data.message ??
+            "承認待ちの申請があるため、修正できません。",
+        );
+        return;
       }
 
       toast.error("修正申請に失敗しました.");
@@ -284,7 +289,7 @@ export default function UserAttendanceDetailCard({ attendance }: Props) {
           disabled={hasRequiredInputError || isFormDisabled}
           className="rounded-lg bg-emerald-600 px-5 py-2.5 text-lg font-semibold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400"
         >
-          修正申請
+          {isRejected ? "再申請" : "修正申請"}
         </button>
         {isFormDisabled && (
           <p className="text-sm font-semibold text-red-500">
