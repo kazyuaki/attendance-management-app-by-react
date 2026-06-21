@@ -1,18 +1,24 @@
 // src/user/attendanceList/UserAtteandanceListRow.tsx
 import { Link } from "react-router-dom";
 import type { UserAttendance } from "../../../types/userAttendance";
-import {
-  formatAttendanceTime,
-} from "../../../utils/attendance";
+import { formatAttendanceTime } from "../../../utils/attendance";
 
 type Props = {
   attendance: UserAttendance;
+  isWeekStart?: boolean;
 };
 
 /* ユーザー勤怠一覧の1行 */
-export default function UserAttendanceListRow({ attendance }: Props) {
+export default function UserAttendanceListRow({
+  attendance,
+  isWeekStart = false,
+}: Props) {
   return (
-    <tr className="transition hover:bg-slate-50">
+    <tr
+      className={`transition hover:bg-slate-50 ${
+        isWeekStart ? "border-t-4 border-t-emerald-100" : ""
+      }`}
+    >
       <td className="px-6 py-4 font-medium text-slate-700">
         {attendance.work_date}
       </td>

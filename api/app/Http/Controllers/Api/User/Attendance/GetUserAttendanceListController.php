@@ -32,7 +32,6 @@ class GetUserAttendanceListController extends Controller
             'attendances' => $attendances->map(function ($attendance) {
                 $workDate = Carbon::parse($attendance->work_date);
                 $weekLabels = ['日', '月', '火', '水', '木', '金', '土'];
-
                 $totalBreakMinutes = $attendance->breakTimes->sum(function ($breakTime) {
                     if (! $breakTime->break_out) {
                         return 0;
@@ -61,6 +60,7 @@ class GetUserAttendanceListController extends Controller
                 return [
                     'id' => $attendance->id,
                     'work_date' => $workDate->format('m/d').'('.$weekLabels[$workDate->dayOfWeek].')',
+                    'work_date_value' => $workDate->toDateString(),
                     'clockIn' => Carbon::parse($attendance->clock_in)->format('H:i'),
                     'clockOut' => $attendance->clock_out
                         ? Carbon::parse($attendance->clock_out)->format('H:i')

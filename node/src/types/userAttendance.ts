@@ -4,6 +4,7 @@
 export type UserAttendance = {
   id: number;
   work_date: string;
+  work_date_value: string;
   clockIn: string;
   clockOut: string | null;
   breakTime: string;
@@ -14,6 +15,7 @@ export type UserAttendance = {
 export type UserAttendanceResponse = {
   id: number;
   work_date: string;
+  work_date_value: string;
   clockIn: string;
   clockOut: string | null;
   breakTime: string;

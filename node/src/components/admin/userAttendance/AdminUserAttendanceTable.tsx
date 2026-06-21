@@ -3,8 +3,10 @@
 import { useNavigate } from "react-router-dom";
 import type { AdminUserAttendance } from "../../../types/adminUserAttendance";
 import {
+  formatDateToIso,
   formatAttendanceListDate,
   formatAttendanceTime,
+  getWeekStartDate,
 } from "../../../utils/attendance";
 
 type Props = {
@@ -19,6 +21,9 @@ export default function AdminUserAttendanceTable({ attendances }: Props) {
   const handleNavigate = (attendanceId: number) => {
     navigate(`/admin/attendances/${attendanceId}`);
   };
+  const sortedAttendances = [...attendances].sort((a, b) =>
+    a.work_date.localeCompare(b.work_date),
+  );
 
   // 休憩時間の計算
   const calculateBreakTime = (attendance: AdminUserAttendance): string => {
@@ -60,7 +65,7 @@ export default function AdminUserAttendanceTable({ attendances }: Props) {
     const minutes = totalMinutes % 60;
 
     return `${hours}:${minutes.toString().padStart(2, "0")}`;
-  }
+  };
 
   return (
     <div className="mt-8 overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-100">
@@ -80,41 +85,57 @@ export default function AdminUserAttendanceTable({ attendances }: Props) {
         </thead>
 
         <tbody className="divide-y divide-slate-50">
-          {attendances.map((attendance) => (
-            <tr
-              key={attendance.id}
-              className="group transition hover:bg-slate-50/70"
-            >
-              <td className="px-6 py-4 font-semibold text-slate-900">
-                {formatAttendanceListDate(attendance.work_date)}
-              </td>
+          {sortedAttendances.map((attendance, index) => {
+            const weekStartKey = formatDateToIso(
+              getWeekStartDate(attendance.work_date),
+            );
+            const previousWeekStartKey =
+              index > 0
+                ? formatDateToIso(
+                    getWeekStartDate(sortedAttendances[index - 1].work_date),
+                  )
+                : "";
+            const isWeekStart =
+              index > 0 && weekStartKey !== previousWeekStartKey;
 
-              <td className="px-6 py-4 text-slate-700">
-                {formatAttendanceTime(attendance.clock_in)}
-              </td>
+            return (
+              <tr
+                key={attendance.id}
+                className={`group transition hover:bg-slate-50/70 ${
+                  isWeekStart ? "border-t-4 border-t-indigo-100" : ""
+                }`}
+              >
+                <td className="px-6 py-4 font-semibold text-slate-900">
+                  {formatAttendanceListDate(attendance.work_date)}
+                </td>
 
-              <td className="px-6 py-4 text-slate-700">
-                {formatAttendanceTime(attendance.clock_out)}
-              </td>
+                <td className="px-6 py-4 text-slate-700">
+                  {formatAttendanceTime(attendance.clock_in)}
+                </td>
 
-              <td className="px-6 py-4 text-slate-700">
-                {calculateBreakTime(attendance)}
-              </td>
+                <td className="px-6 py-4 text-slate-700">
+                  {formatAttendanceTime(attendance.clock_out)}
+                </td>
 
-              <td className="px-6 py-4 text-slate-700">
-                {calculateTotalTime(attendance)}
-              </td>
+                <td className="px-6 py-4 text-slate-700">
+                  {calculateBreakTime(attendance)}
+                </td>
 
-              <td className="px-6 py-4">
-                <button
-                  className="rounded-lg bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-100"
-                  onClick={() => handleNavigate(attendance.id)}
-                >
-                  詳細 →
-                </button>
-              </td>
-            </tr>
-          ))}
+                <td className="px-6 py-4 text-slate-700">
+                  {calculateTotalTime(attendance)}
+                </td>
+
+                <td className="px-6 py-4">
+                  <button
+                    className="rounded-lg bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-100"
+                    onClick={() => handleNavigate(attendance.id)}
+                  >
+                    詳細 →
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
