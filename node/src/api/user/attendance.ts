@@ -2,6 +2,7 @@
 
 import { userAttendanceApi } from "../../api/http";
 import type {
+  AttendanceReport,
   StoreAttendanceEditRequestPayload,
   UserAttendanceDetailResponse,
   UserAttendanceEditRequest,
@@ -29,10 +30,12 @@ type TodayAttendanceResponse = {
   attendance: TodayAttendance | null;
 };
 
+type AttendanceActionResponse = Record<string, unknown>;
+
 /**
  * 今日の勤怠情報を取得するAPI
  */
-export const getTodayAttendance = async () => {
+export const getTodayAttendance = async (): Promise<TodayAttendance | null> => {
   const response = await userAttendanceApi.get<TodayAttendanceResponse>(
     "/get-today-attendance",
   );
@@ -43,8 +46,9 @@ export const getTodayAttendance = async () => {
 /**
  * 出勤時間打刻API
  */
-export const clockIn = async () => {
-  const response = await userAttendanceApi.post("/clock-in");
+export const clockIn = async (): Promise<AttendanceActionResponse> => {
+  const response =
+    await userAttendanceApi.post<AttendanceActionResponse>("/clock-in");
 
   return response.data;
 };
@@ -52,8 +56,9 @@ export const clockIn = async () => {
 /**
  * 退勤時間打刻API
  */
-export const clockOut = async () => {
-  const response = await userAttendanceApi.post("/clock-out");
+export const clockOut = async (): Promise<AttendanceActionResponse> => {
+  const response =
+    await userAttendanceApi.post<AttendanceActionResponse>("/clock-out");
 
   return response.data;
 };
@@ -61,8 +66,9 @@ export const clockOut = async () => {
 /**
  * 休憩開始時間打刻API
  */
-export const breakIn = async () => {
-  const response = await userAttendanceApi.post("/break-in");
+export const breakIn = async (): Promise<AttendanceActionResponse> => {
+  const response =
+    await userAttendanceApi.post<AttendanceActionResponse>("/break-in");
 
   return response.data;
 };
@@ -70,8 +76,9 @@ export const breakIn = async () => {
 /**
  * 休憩終了時間打刻API
  */
-export const breakOut = async () => {
-  const response = await userAttendanceApi.post("/break-out");
+export const breakOut = async (): Promise<AttendanceActionResponse> => {
+  const response =
+    await userAttendanceApi.post<AttendanceActionResponse>("/break-out");
 
   return response.data;
 };
@@ -81,7 +88,9 @@ export const breakOut = async () => {
  * @param month
  * @returns
  */
-export const fetchUserAttendances = async (month: string) => {
+export const fetchUserAttendances = async (
+  month: string,
+): Promise<UserAttendanceResponse[]> => {
   const response = await userAttendanceApi.get<{
     attendances: UserAttendanceResponse[];
   }>("get-user-attendance-list", {
@@ -93,47 +102,60 @@ export const fetchUserAttendances = async (month: string) => {
 
 /**
  * 勤怠詳細取得API
- * @param id 
+ * @param id
+ * @returns
+ */
+export const fetchUserAttendanceDetail = async (
+  id: string,
+): Promise<UserAttendanceDetailResponse["attendance"]> => {
+  const response = await userAttendanceApi.get<UserAttendanceDetailResponse>(
+    `get-user-attendance-detail/${id}`,
+  );
+  return response.data.attendance;
+};
+
+/**
+ * 勤怠レポート取得API
+ * 
  * @returns 
  */
-export const fetchUserAttendanceDetail = async (id: string) => {
-  const response = await userAttendanceApi.get<UserAttendanceDetailResponse>(
-    `get-user-attendance-detail/${id}`
-  )
-  return response.data.attendance;
-}
+export const getAttendanceReport = async (): Promise<AttendanceReport> => {
+  const response = await userAttendanceApi.get<AttendanceReport>("/get-attendance-report");
+
+  return response.data;
+};
 
 /**
  * 勤怠修正申請API
- * @param attendanceId 
- * @param payload 
- * @returns 
+ * @param attendanceId
+ * @param payload
+ * @returns
  */
-export const storeAttendanceEditRequest = async(
+export const storeAttendanceEditRequest = async (
   attendanceId: number,
   payload: StoreAttendanceEditRequestPayload,
-) => {
-  const response = await userAttendanceApi.post(
+): Promise<AttendanceActionResponse> => {
+  const response = await userAttendanceApi.post<AttendanceActionResponse>(
     `/${attendanceId}/edit-request`,
     payload,
-  )
+  );
   return response.data;
-}
+};
 
 /**
  * 勤怠修正申請取り下げAPI
- * 
- * @param attendanceEditRequestId 
- * @returns 
+ *
+ * @param attendanceEditRequestId
+ * @returns
  */
-export const cancelAttendanceEditRequest = async(
-  attendanceEditRequestId: number
-) => {
-  const response = await userAttendanceApi.post(
+export const cancelAttendanceEditRequest = async (
+  attendanceEditRequestId: number,
+): Promise<AttendanceActionResponse> => {
+  const response = await userAttendanceApi.post<AttendanceActionResponse>(
     `edit-requests/${attendanceEditRequestId}/cancel`,
   );
   return response.data;
-}
+};
 
 /**
  * 勤怠修正申請一覧取得API
