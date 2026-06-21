@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Attendance;
 use App\Models\User;
+use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\Seeder;
 
@@ -20,7 +21,10 @@ class AttendanceSeeder extends Seeder
             'suzuki@attendance.com',
         ])->get();
 
-        $period = CarbonPeriod::create('2026-06-01', '2026-06-30');
+        $startDate = Carbon::now()->subMonths(5)->startOfMonth();
+        $endDate = Carbon::now()->endOfMonth();
+
+        $period = CarbonPeriod::create($startDate, $endDate);
 
         foreach ($users as $user) {
             foreach ($period as $date) {

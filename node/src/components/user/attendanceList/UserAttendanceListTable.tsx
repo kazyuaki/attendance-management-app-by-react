@@ -3,6 +3,7 @@
 import { Link } from "react-router-dom";
 import type { UserAttendance } from "../../../types/userAttendance";
 import UserAttendanceListRow from "./UserAttendanceListRow";
+import { formatDateToIso, getWeekStartDate } from "../../../utils/attendance";
 
 type Props = {
   attendances: UserAttendance[];
@@ -12,6 +13,31 @@ const COLUMNS = ["日付", "出勤", "退勤", "休憩時間", "実働時間", "
 
 /* ユーザー勤怠一覧テーブル */
 export default function UserAttendanceListTable({ attendances }: Props) {
+  const sortedAttendances = [...attendances].sort((a, b) =>
+    a.work_date_value.localeCompare(b.work_date_value),
+  );
+
+  const tableRows = sortedAttendances.map((attendance, index) => {
+    const weekStartKey = formatDateToIso(
+      getWeekStartDate(attendance.work_date_value),
+    );
+    const previousWeekStartKey =
+      index > 0
+        ? formatDateToIso(
+            getWeekStartDate(sortedAttendances[index - 1].work_date_value),
+          )
+        : "";
+    const isFirstWeekRow = index > 0 && weekStartKey !== previousWeekStartKey;
+
+    return (
+      <UserAttendanceListRow
+        key={attendance.id}
+        attendance={attendance}
+        isWeekStart={isFirstWeekRow}
+      />
+    );
+  });
+
   return (
     <>
       <div className="mb-6 flex justify-end">
@@ -37,14 +63,7 @@ export default function UserAttendanceListTable({ attendances }: Props) {
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-slate-100">
-            {attendances.map((attendance) => (
-              <UserAttendanceListRow
-                key={attendance.id}
-                attendance={attendance}
-              />
-            ))}
-          </tbody>
+          <tbody className="divide-y divide-slate-100">{tableRows}</tbody>
         </table>
       </div>
     </>
