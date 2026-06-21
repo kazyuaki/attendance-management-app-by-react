@@ -8,12 +8,25 @@ import type { AdminUserAttendance } from "../../types/adminUserAttendance";
 
 /* スタッフ別月次勤怠一覧ページ */
 export default function AdminUserAttendanceListPage() {
-  const month = "2026-06";
+  const formatYearMonth = (date: Date) =>
+    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+
+  const [month, setMonth] = useState(() => formatYearMonth(new Date()));
+
   const formattedMonth = month.replace("-", "年") + "月";
 
-  const onPrevMonth = () => [];
-  const onNextMonth = () => [];
+  const onPrevMonth = () => {
+    const date = new Date(`${month}-01`);
+    date.setMonth(date.getMonth() - 1);
+    setMonth(formatYearMonth(date));
+  };
+  const onNextMonth = () => {
+    const date = new Date(`${month}-01`);
+    date.setMonth(date.getMonth() + 1);
+    setMonth(formatYearMonth(date));
+  };
   const onChangeMonth = (month: string) => {
+    setMonth(month);
     console.log(month);
   };
 
@@ -30,7 +43,7 @@ export default function AdminUserAttendanceListPage() {
     const getUserAttendance = async () => {
       try {
         setIsLoading(true);
-        const data = await fetchAdminUserAttendanceList(Number(id));
+        const data = await fetchAdminUserAttendanceList(Number(id), month);
         setUserName(data.user.name);
         setAttendances(data.attendances);
       } catch (error) {
@@ -40,7 +53,7 @@ export default function AdminUserAttendanceListPage() {
       }
     };
     getUserAttendance();
-  }, [id]);
+  }, [id, month]);
 
   return (
     <main className="mx-auto max-w-7xl px-6 py-10">

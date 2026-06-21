@@ -100,6 +100,9 @@ class AttendanceEditRequestService
         }
     }
 
+    /**
+     * 申請をキャンセルする
+     */
     public function cancel(
         AttendanceEditRequest $attendanceEditRequest,
         User $user,
@@ -108,8 +111,8 @@ class AttendanceEditRequestService
             abort(403);
         }
 
-        if ($attendanceEditRequest->status !== 'pending') {
-            throw new ConflictHttpException('承認待ちの申請のみ取り下げできます。');
+        if (! in_array($attendanceEditRequest->status, ['pending', 'rejected'], true)) {
+            throw new ConflictHttpException('承認待ちまたは差し戻しの申請のみ取り下げできます。');
         }
 
         $attendanceEditRequest->update([
