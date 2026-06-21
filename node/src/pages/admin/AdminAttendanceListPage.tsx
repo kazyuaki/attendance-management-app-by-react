@@ -17,10 +17,15 @@ const formatDateLabel = (date: string): string => {
   });
 };
 
+// 日付をYYYY-MM-DD形式で取得する関数
+const getToday = (): string => {
+  return new Date().toLocaleDateString("sv-SE");
+}
+
 /* 管理者用の勤怠一覧ページ */
 export default function AdminAttendanceListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentDate = searchParams.get("date") || "2026-06-01"; // デフォルトの日付を設定
+  const currentDate = searchParams.get("date") || getToday(); // デフォルトの日付を設定
 
   const [attendances, setAttendances] = useState<AdminAttendance[]>([]);
   const [isLoading, setIsLoading] = useState(true);
