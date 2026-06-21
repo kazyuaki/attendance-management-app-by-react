@@ -71,6 +71,15 @@ export default function AdminAttendanceDetailCard({ attendance }: Props) {
   const hasRequiredInputError =
     !clockIn || !clockOut || breakTimes.some((breakTime) => !breakTime.breakIn);
 
+  /** 休暇扱いにする関数 */
+  const handleSetHoliday = () => {
+    setClockIn("00:00");
+    setClockOut("00:00");
+    setBreakTimes([]);
+    setNote("休暇のため");
+    setErrors({});
+  };
+
   /* 勤怠情報を保存する関数 */
   const handleSave = async () => {
     setErrors({});
@@ -212,13 +221,20 @@ export default function AdminAttendanceDetailCard({ attendance }: Props) {
       </div>
 
       {/* ボタン */}
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-4">
         <button
           onClick={handleSave}
           disabled={hasRequiredInputError}
           className="rounded-lg bg-blue-600 px-5 py-2.5 text-lg font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400"
         >
           修正
+        </button>
+        <button
+          type="button"
+          className="rounded-lg border border-slate-300 px-5 py-2.5 text-lg font-semibold text-slate-600 transition hover:bg-slate-50"
+          onClick={handleSetHoliday}
+        >
+          休暇扱いにする
         </button>
       </div>
     </div>

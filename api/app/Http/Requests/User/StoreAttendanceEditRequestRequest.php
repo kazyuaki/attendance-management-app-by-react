@@ -24,12 +24,12 @@ class StoreAttendanceEditRequestRequest extends FormRequest
     {
         return [
             'clock_in' => ['required', 'date_format:H:i'],
-            'clock_out' => ['required', 'date_format:H:i', 'after:clock_in'],
+            'clock_out' => ['required', 'date_format:H:i', 'after_or_equal:clock_in'],
             'break_times' => ['array'],
             'break_times.*.break_in' => [
                 'required',
                 'date_format:H:i',
-                'after:clock_in',
+                'after_or_equal:clock_in',
                 'before:clock_out',
             ],
             'break_times.*.break_out' => [
@@ -47,9 +47,9 @@ class StoreAttendanceEditRequestRequest extends FormRequest
         return [
             'clock_in.required' => '出勤時間は必須です。',
             'clock_out.required' => '退勤時間は必須です。',
-            'clock_out.after' => '退勤時間は出勤時間より後でなければなりません。',
+            'clock_out.after_or_equal' => '退勤時間は出勤時間以降でなければなりません。',
             'break_times.*.break_in.required' => '休憩開始時間は必須です。',
-            'break_times.*.break_in.after' => '休憩開始時間は出勤時間より後でなければなりません。',
+            'break_times.*.break_in.after_or_equal' => '休憩開始時間は出勤時間以降でなければなりません。',
             'break_times.*.break_in.before' => '休憩開始時間は退勤時間より前でなければなりません。',
             'break_times.*.break_out.after' => '休憩終了時間は休憩開始時間より後でなければなりません。',
             'break_times.*.break_out.before' => '休憩終了時間は退勤時間より前でなければなりません。',

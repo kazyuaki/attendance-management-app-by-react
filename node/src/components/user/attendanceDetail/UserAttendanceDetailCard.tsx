@@ -11,19 +11,13 @@ import {
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import UserAttendanceCancelDialog from "./UserAttendanceCancelDialog";
+import {
+  validateUserAttendanceEditRequest,
+  type UserAttendanceValidationErrors,
+} from "../../../utils/validation/userAttendanceValidation";
 
 type Props = {
   attendance: UserAttendanceDetail;
-};
-
-type ValidationErrors = {
-  clock_in?: string;
-  clock_out?: string;
-  note?: string;
-  break_times?: {
-    break_in?: string;
-    break_out?: string;
-  }[];
 };
 
 /* ユーザー勤怠詳細カード */
@@ -37,82 +31,30 @@ export default function UserAttendanceDetailCard({ attendance }: Props) {
       break_out: breakTime.break_out,
     })),
   );
-  const [errors, setErrors] = useState<ValidationErrors>({});
+  const [errors, setErrors] = useState<UserAttendanceValidationErrors>({});
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
 
   const navigate = useNavigate();
   const isRejected = !!attendance.rejected_reason;
   const isFormDisabled = attendance.is_attendance_edit_requested && !isRejected;
 
-  const validate = (): ValidationErrors => {
-    const errors: ValidationErrors = {};
-    const breakTimeErrors: ValidationErrors["break_times"] = [];
-
-    if (!clockIn) {
-      errors.clock_in = "出勤時間は必須です。";
-    }
-
-    if (!clockOut) {
-      errors.clock_out = "退勤時間は必須です。";
-    }
-
-    if (clockIn && clockOut && clockOut <= clockIn) {
-      errors.clock_out = "退勤時間は出勤時間より後でなければなりません。";
-    }
-
-    breakTimes.forEach((breakTime, index) => {
-      const rowError: {
-        break_in?: string;
-        break_out?: string;
-      } = {};
-
-      if (!breakTime.break_in) {
-        rowError.break_in = "休憩開始時間は必須です。";
-      }
-
-      if (breakTime.break_in && clockIn && breakTime.break_in <= clockIn) {
-        rowError.break_in =
-          "休憩開始時間は出勤時間より後でなければなりません。";
-      }
-
-      if (breakTime.break_in && clockOut && breakTime.break_in >= clockOut) {
-        rowError.break_in =
-          "休憩開始時間は退勤時間より前でなければなりません。";
-      }
-
-      if (
-        breakTime.break_out &&
-        breakTime.break_in &&
-        breakTime.break_out <= breakTime.break_in
-      ) {
-        rowError.break_out =
-          "休憩終了時間は休憩開始時間より後でなければなりません。";
-      }
-
-      if (breakTime.break_out && clockOut && breakTime.break_out >= clockOut) {
-        rowError.break_out =
-          "休憩終了時間は退勤時間より前でなければなりません。";
-      }
-      breakTimeErrors[index] = rowError;
-    });
-
-    if (breakTimeErrors.some((error) => error.break_in || error.break_out)) {
-      errors.break_times = breakTimeErrors;
-    }
-
-    if (!note.trim()) {
-      errors.note = "備考を記入してください。";
-    }
-
-    if (note.length > 255) {
-      errors.note = "備考は255文字以内で入力してください。";
-    }
-    return errors;
+  // 休暇扱いにする
+  const handleSetHoliday = () => {
+    setClockIn("00:00");
+    setClockOut("00:00");
+    setBreakTimes([]);
+    setNote("休暇のため");
+    setErrors({});
   };
 
   /** 勤怠修正ボタン送信 */
   const handleSubmit = async () => {
-    const validationErrors = validate();
+    const validationErrors = validateUserAttendanceEditRequest({
+      clockIn,
+      clockOut,
+      note,
+      breakTimes,
+    });
 
     if (
       validationErrors.clock_in ||
@@ -182,8 +124,7 @@ export default function UserAttendanceDetailCard({ attendance }: Props) {
 
       if (axios.isAxiosError(error) && error.response?.status === 409) {
         toast.error(
-          error.response.data.message ??
-            "承認待ちの申請のみ取り下げできます。",
+          error.response.data.message ?? "承認待ちまたは差し戻しの申請のみ取り下げできます。",
         );
         return;
       }
@@ -329,6 +270,14 @@ export default function UserAttendanceDetailCard({ attendance }: Props) {
             className="rounded-lg bg-emerald-600 px-5 py-2.5 text-lg font-semibold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400"
           >
             {isRejected ? "再申請" : "修正申請"}
+          </button>
+          <button
+            type="button"
+            onClick={handleSetHoliday}
+            disabled={isFormDisabled}
+            className="rounded-lg border border-slate-300 px-5 py-2.5 text-lg font-semibold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
+          >
+            休暇扱いにする
           </button>
         </div>
         {isFormDisabled && (
