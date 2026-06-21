@@ -47,6 +47,28 @@ export type UserAttendanceDetailResponse = {
   attendance: UserAttendanceDetail;
 };
 
+// 月別勤怠レポートの型
+export type AttendanceMonthlyReport = {
+  month: string;
+  work_time: string;
+  overtime: string;
+}
+
+// ユーザー勤怠レポートの型
+export type AttendanceReport = {
+  summary: {
+    total_work_time: string;
+    total_overtime: string;
+    average_work_time: string;
+  }
+  monthly_reports: AttendanceMonthlyReport[];
+  alerts: {
+    late_count: number;
+    early_leave_count: number;
+    overtime_days: number;
+  }
+}
+
 // 修正申請の休憩時間情報型定義
 export type AttendanceEditRequestBreakTime = {
   break_in: string;

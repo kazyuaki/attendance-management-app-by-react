@@ -8,6 +8,7 @@ import UserLoginPage from "../pages/user/UserLoginPage";
 import UserGuestLayout from "../components/layouts/UserGuestLayout";
 import UserAttendanceDetailPage from "../pages/user/UserAttendanceDetailPage";
 import UserRequestListPage from "../pages/user/UserRequestListPage";
+import UserAttendanceReportPage from "../pages/user/UserAttendanceReportPage";
 
 export default function UserRoutes() {
   return (
@@ -25,6 +26,10 @@ export default function UserRoutes() {
         <Route path="/attendances" element={<UserAttendanceListPage />} />
         <Route path="/attendance/:id" element={<UserAttendanceDetailPage />} />
         <Route path="/requests" element={<UserRequestListPage />} />
+        <Route
+          path="/attendance-report"
+          element={<UserAttendanceReportPage />}
+        />
       </Route>
     </Routes>
   );
