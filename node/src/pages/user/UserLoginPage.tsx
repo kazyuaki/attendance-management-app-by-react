@@ -8,6 +8,8 @@ import {
 import toast from "react-hot-toast";
 import { Eye, EyeOff } from "lucide-react";
 
+type TouchedState = Partial<Record<keyof UserLoginErrors, boolean>>;
+
 /**
  * ログインページコンポーネント
  * - ユーザーがメールアドレスとパスワードを入力してログインできるフォームを提供
@@ -20,17 +22,29 @@ export default function UserLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<UserLoginErrors>({});
+  const [touched, setTouched] = useState<TouchedState>({});
   const [showPassword, setShowPassword] = useState(false);
 
   const isSubmitDisabled = !email || !password;
+  const validationErrors = validateUserLoginForm(email, password);
+  const emailErrors =
+    errors.email ?? (touched.email ? validationErrors.email : undefined);
+  const passwordErrors =
+    errors.password ??
+    (touched.password ? validationErrors.password : undefined);
+
+  const handleBlur = (field: keyof TouchedState) => {
+    setTouched((prev) => ({
+      ...prev,
+      [field]: true,
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const validationErrors: UserLoginErrors = validateUserLoginForm(
-      email,
-      password,
-    );
+    setTouched({ email: true, password: true });
+
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
@@ -74,11 +88,12 @@ export default function UserLoginPage() {
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
-              setErrors({});
+              setErrors((prev) => ({ ...prev, email: undefined }));
             }}
+            onBlur={() => handleBlur("email")}
           />
-          {errors.email && (
-            <p className="mb-4 text-red-500">{errors.email[0]}</p>
+          {emailErrors && (
+            <p className="mb-4 text-red-500">{emailErrors[0]}</p>
           )}
         </div>
         <div className="mx-auto mb-12 w-[90%]">
@@ -95,8 +110,9 @@ export default function UserLoginPage() {
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
-                setErrors({});
+                setErrors((prev) => ({ ...prev, password: undefined }));
               }}
+              onBlur={() => handleBlur("password")}
             />
             <button
               type="button"
@@ -106,8 +122,8 @@ export default function UserLoginPage() {
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
-          {errors.password && (
-            <p className="mb-4 text-red-500">{errors.password[0]}</p>
+          {passwordErrors && (
+            <p className="mb-4 text-red-500">{passwordErrors[0]}</p>
           )}
         </div>
         <div className="mx-auto mb-6 w-[90%] text-md text-slate-500">
