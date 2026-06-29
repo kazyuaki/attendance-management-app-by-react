@@ -1,30 +1,17 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
 import {
-  clockIn,
-  clockOut,
-  breakIn,
-  breakOut,
-  getTodayAttendance,
-  type TodayAttendance,
-} from "../../api/user/attendance";
-import {
-  formatDate,
-  formatTime,
-  calculateWorkDuration,
-} from "../../utils/attendance";
-import toast from "react-hot-toast";
+  useAttendanceClock,
+  type AttendanceStatus,
+} from "../../hooks/useAttendanceClock";
+import { formatDate, formatTime } from "../../utils/attendance";
 
-type AttendanceStatus = "off" | "working" | "break" | "finished";
-
-const statusLabelMap = {
+const statusLabelMap: Record<AttendanceStatus, string> = {
   off: "勤務外",
   working: "出勤中",
   break: "休憩中",
   finished: "退勤済",
 };
 
-const statusStyleMap = {
+const statusStyleMap: Record<AttendanceStatus, string> = {
   off: "bg-slate-100 text-slate-700",
   working: "bg-emerald-100 text-emerald-700",
   break: "bg-amber-100 text-amber-700",
@@ -35,220 +22,46 @@ type ActionButtonProps = {
   label: string;
   onClick: () => void;
   className: string;
+  disabled?: boolean;
 };
 
 // 汎用的なアクションボタンコンポーネント
-function ActionButton({ label, onClick, className }: ActionButtonProps) {
+function ActionButton({
+  label,
+  onClick,
+  className,
+  disabled = false,
+}: ActionButtonProps) {
   return (
-    <button className={className} onClick={onClick}>
+    <button className={className} onClick={onClick} disabled={disabled}>
       {label}
     </button>
   );
 }
-// APIから取得した時刻文字列をDateオブジェクトに変換する関数
-function createDateFromTime(time: string) {
-  const [hoursString, minutesString, secondsString = "0"] = time.split(":");
-  const hours = Number(hoursString);
-  const minutes = Number(minutesString);
-  const seconds = Number(secondsString);
-  const date = new Date();
-
-  date.setHours(hours, minutes, seconds, 0);
-
-  return date;
-}
-// 勤怠情報から現在のステータスを判定する関数
-function getStatusFromAttendance(
-  attendance: TodayAttendance,
-): AttendanceStatus {
-  if (attendance.clock_out) {
-    return "finished";
-  }
-
-  const latestBreak = attendance.break_times.at(-1);
-
-  if (latestBreak && !latestBreak.break_out) {
-    return "break";
-  }
-
-  return "working";
-}
 
 /**
  * 勤怠打刻ページ
+ * - 現在時刻を表示
+ * - 当日の勤怠情報を表示
+ * - 出勤・退勤・休憩の打刻を行う
  */
 export default function UserAttendanceClockPage() {
-  const [currentTime, setCurrentTime] = useState("");
-  const [status, setStatus] = useState<AttendanceStatus>("off");
-  const [isReady, setIsReady] = useState(false);
+  const {
+    currentTime,
+    status,
+    isReady,
+    isSubmitting,
+    clockInTime,
+    clockOutTime,
+    breakStartTime,
+    breakEndTime,
+    workDuration,
+    handleClockIn,
+    handleClockOut,
+    handleBreakStart,
+    handleBreakEnd,
+  } = useAttendanceClock();
 
-  const [clockInTime, setClockInTime] = useState<Date | null>(null);
-  const [clockOutTime, setClockOutTime] = useState<Date | null>(null);
-  const [breakStartTime, setBreakStartTime] = useState<Date | null>(null);
-  const [breakEndTime, setBreakEndTime] = useState<Date | null>(null);
-  const [workDuration, setWorkDuration] = useState<string | null>(null);
-
-  // 現在時刻を更新するための副作用
-  useEffect(() => {
-    const initializeAttendance = async () => {
-      try {
-        setStatus("off")
-        setClockInTime(null)
-        setClockOutTime(null)
-        setBreakStartTime(null)
-        setBreakEndTime(null)
-        setWorkDuration(null)
-
-        const attendance = await getTodayAttendance();
-
-        if (!attendance) {
-          return;
-        }
-
-        setClockInTime(createDateFromTime(attendance.clock_in));
-
-        const latestBreak = attendance.break_times.at(-1);
-
-        if (latestBreak) {
-          setBreakStartTime(createDateFromTime(latestBreak.break_in));
-
-          if (latestBreak.break_out) {
-            setBreakEndTime(createDateFromTime(latestBreak.break_out));
-          }
-        }
-
-        if (attendance.clock_out) {
-          setClockOutTime(createDateFromTime(attendance.clock_out));
-        }
-
-        setStatus(getStatusFromAttendance(attendance));
-      } catch (error) {
-        console.error("Failed to load attendance status:", error);
-      } finally {
-        setIsReady(true);
-      }
-    };
-
-    initializeAttendance();
-
-    const updateTime = () => {
-      const now = new Date();
-
-      setCurrentTime(formatTime(now));
-    };
-
-    updateTime();
-
-    const timer = setInterval(updateTime, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  // 出勤ボタンを押したときの処理
-  const handleClockIn = async () => {
-    try {
-      const response = await clockIn();
-      console.log("Clock-in successful:", response);
-
-      setClockInTime(new Date());
-      setStatus("working");
-    } catch (error) {
-      console.error("Clock-in failed:", error);
-
-      if (axios.isAxiosError(error)) {
-        const message = error.response?.data?.message;
-
-        if (typeof message === "string") {
-          toast.error(message);
-          return;
-        }
-      }
-
-      toast.error("出勤の打刻に失敗しました。再度お試しください。");
-    }
-  };
-
-  // 退勤ボタンを押したときの処理
-  const handleClockOut = async () => {
-    try {
-      await clockOut();
-
-      const now = new Date();
-      setClockOutTime(now);
-
-      // 勤務時間の計算
-      if (clockInTime) {
-        const duration = calculateWorkDuration(
-          clockInTime,
-          now,
-          breakStartTime,
-          breakEndTime,
-        );
-
-        setWorkDuration(duration);
-      }
-      setStatus("finished");
-    } catch (error) {
-      console.error("Clock-out failed:", error);
-
-      if (axios.isAxiosError(error)) {
-        const message = error.response?.data?.message;
-
-        if (typeof message === "string") {
-          toast.error(message);
-          return;
-        }
-      }
-      toast.error("退勤の打刻に失敗しました。");
-    }
-  };
-
-  // 休憩開始ボタンを押したときの処理
-  const handleBreakStart = async () => {
-    try {
-      await breakIn();
-
-      setBreakStartTime(new Date());
-      setBreakEndTime(null);
-      setStatus("break");
-    } catch (error) {
-      console.error("Failed to start break:", error);
-
-      if (axios.isAxiosError(error)) {
-        const message = error.response?.data?.message;
-
-        if (typeof message === "string") {
-          toast.error(message);
-          return;
-        }
-      }
-      toast.error("休憩開始の打刻に失敗しました。");
-    }
-  };
-
-  // 休憩終了ボタンを押したときの処理
-  const handleBreakEnd = async () => {
-    try {
-      await breakOut();
-
-      setBreakEndTime(new Date());
-      setStatus("working");
-    } catch (error) {
-      console.error("Failed to end break:", error);
-
-      if (axios.isAxiosError(error)) {
-        const message = error.response?.data?.message;
-
-        if (typeof message === "string") {
-          toast.error(message);
-          return;
-        }
-      }
-      toast.error("休憩終了の打刻に失敗しました。");
-    }
-  };
-
-  // 現在のステータスに応じたアクションエリアをレンダリングする関数
   const renderActionArea = () => {
     switch (status) {
       case "off":
@@ -257,6 +70,7 @@ export default function UserAttendanceClockPage() {
             label="出勤"
             onClick={handleClockIn}
             className="mt-10 rounded-2xl bg-emerald-600 px-16 py-4 text-lg font-bold text-white shadow-lg shadow-emerald-600/50 transition-colors hover:bg-emerald-700"
+            disabled={isSubmitting}
           />
         );
       case "working":
@@ -266,11 +80,13 @@ export default function UserAttendanceClockPage() {
               label="退勤"
               onClick={handleClockOut}
               className="rounded-2xl bg-red-500 px-16 py-4 text-lg font-bold text-white shadow-lg shadow-red-500/50 transition-colors hover:bg-red-600"
+              disabled={isSubmitting}
             />
             <ActionButton
               label="休憩開始"
               onClick={handleBreakStart}
               className="rounded-2xl bg-yellow-500 px-16 py-4 text-lg font-bold text-white shadow-lg shadow-yellow-500/50 transition-colors hover:bg-yellow-600"
+              disabled={isSubmitting}
             />
           </div>
         );
@@ -280,6 +96,7 @@ export default function UserAttendanceClockPage() {
             label="休憩終了"
             onClick={handleBreakEnd}
             className="mt-10 rounded-2xl bg-emerald-600 px-16 py-4 text-lg font-bold text-white shadow-lg shadow-emerald-600/50 transition-colors hover:bg-emerald-700"
+            disabled={isSubmitting}
           />
         );
       case "finished":
@@ -295,7 +112,6 @@ export default function UserAttendanceClockPage() {
     }
   };
 
-  // 打刻ログを表示するための配列
   const attendanceLogs = [
     clockInTime ? `出勤時刻：${formatTime(clockInTime)}` : null,
     breakStartTime ? `休憩開始：${formatTime(breakStartTime)}` : null,
