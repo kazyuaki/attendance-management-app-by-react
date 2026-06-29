@@ -10,6 +10,11 @@ import { Eye, EyeOff } from "lucide-react";
 
 type TouchedState = Partial<Record<keyof UserLoginErrors, boolean>>;
 
+type FormState = {
+  email: string;
+  password: string;
+};
+
 /**
  * ログインページコンポーネント
  * - ユーザーがメールアドレスとパスワードを入力してログインできるフォームを提供
@@ -19,20 +24,40 @@ type TouchedState = Partial<Record<keyof UserLoginErrors, boolean>>;
 export default function UserLoginPage() {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState<FormState>({
+    email: "",
+    password: "",
+  });
+
   const [errors, setErrors] = useState<UserLoginErrors>({});
   const [touched, setTouched] = useState<TouchedState>({});
   const [showPassword, setShowPassword] = useState(false);
 
-  const isSubmitDisabled = !email || !password;
-  const validationErrors = validateUserLoginForm(email, password);
+  // 必須項目が未入力の場合はログインボタンを無効化
+  const isSubmitDisabled = !form.email || !form.password;
+
+  // リアルタイムバリデーション用
+  const validationErrors = validateUserLoginForm(form.email, form.password);
   const emailErrors =
     errors.email ?? (touched.email ? validationErrors.email : undefined);
   const passwordErrors =
     errors.password ??
     (touched.password ? validationErrors.password : undefined);
 
+  /** フォーム値を更新し、対象項目のエラーをクリア */
+  const handleChange = (field: keyof FormState, value: string) => {
+    setForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [field]: undefined,
+    }));
+  };
+
+  /** 入力済みフラグを立てる */
   const handleBlur = (field: keyof TouchedState) => {
     setTouched((prev) => ({
       ...prev,
@@ -40,6 +65,7 @@ export default function UserLoginPage() {
     }));
   };
 
+  /** ログイン処理 */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -51,7 +77,7 @@ export default function UserLoginPage() {
     }
 
     try {
-      await userLogin(email, password);
+      await userLogin(form.email, form.password);
       navigate("/attendance");
       toast.success("ログインしました");
     } catch {
@@ -76,7 +102,6 @@ export default function UserLoginPage() {
           登録済みのアカウントでログインしてください
         </p>
         <div className="mx-auto mb-4 w-[90%]">
-          {" "}
           <label htmlFor="email" className="mb-2 block font-bold">
             メールアドレス
           </label>
@@ -85,16 +110,11 @@ export default function UserLoginPage() {
             type="email"
             placeholder="yamada@attendance.com"
             className="w-full rounded-lg border border-gray-300 px-4 py-3"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setErrors((prev) => ({ ...prev, email: undefined }));
-            }}
+            value={form.email}
+            onChange={(e) => handleChange("email", e.target.value)}
             onBlur={() => handleBlur("email")}
           />
-          {emailErrors && (
-            <p className="mb-4 text-red-500">{emailErrors[0]}</p>
-          )}
+          {emailErrors && <p className="mb-4 text-red-500">{emailErrors[0]}</p>}
         </div>
         <div className="mx-auto mb-12 w-[90%]">
           <label htmlFor="password" className="mb-2 block font-bold">
@@ -107,11 +127,8 @@ export default function UserLoginPage() {
               type={showPassword ? "text" : "password"}
               placeholder="Password123"
               className="w-full rounded-lg border border-gray-300 px-4 py-3 pr-12"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                setErrors((prev) => ({ ...prev, password: undefined }));
-              }}
+              value={form.password}
+              onChange={(e) => handleChange("password", e.target.value)}
               onBlur={() => handleBlur("password")}
             />
             <button
